@@ -191,6 +191,16 @@ class TareaDetalleViewModel(private val repositorio: TareaRepository) : ViewMode
         }
     }
 
+    /** Elimina la tarea; el repositorio impide borrar una tarea ya validada. */
+    fun eliminar(usuarioId: Long, alEliminada: (String) -> Unit) {
+        viewModelScope.launch {
+            when (val resultado = repositorio.eliminarTarea(tareaId.value, usuarioId)) {
+                is Operacion.Exito -> alEliminada(resultado.mensaje)
+                is Operacion.Error -> avisar(resultado.mensaje)
+            }
+        }
+    }
+
     fun limpiarMensaje() {
         formulario.value = formulario.value.copy(mensaje = null)
     }

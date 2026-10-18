@@ -71,6 +71,9 @@ interface TareaDao {
     @Query("SELECT COUNT(*) FROM tareas WHERE sectorId = :sectorId")
     suspend fun contarPorSector(sectorId: Long): Int
 
+    @Query("SELECT COUNT(*) FROM tareas WHERE cultivoId = :cultivoId")
+    suspend fun contarPorCultivo(cultivoId: Long): Int
+
     @Query("SELECT COUNT(*) FROM tareas")
     suspend fun contar(): Int
 

@@ -15,7 +15,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import cl.duoc.huertoescolar.ui.componentes.DialogoConfirmacion
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,11 +47,27 @@ fun CultivoFormScreen(
     cultivoId: Long,
     alVolver: () -> Unit,
     alGuardado: (mensaje: String) -> Unit,
+    alEliminado: (mensaje: String) -> Unit,
     viewModel: CultivoFormViewModel = viewModel(factory = CultivoFormViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
     val sectores by viewModel.sectores.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+
+    var confirmarEliminar by remember { mutableStateOf(false) }
+
+    if (confirmarEliminar) {
+        DialogoConfirmacion(
+            titulo = "Eliminar cultivo",
+            mensaje = "Se eliminara este cultivo. Un cultivo con tareas registradas no se puede eliminar.",
+            textoConfirmar = "Eliminar",
+            alConfirmar = {
+                confirmarEliminar = false
+                viewModel.eliminar(alEliminado)
+            },
+            alCancelar = { confirmarEliminar = false }
+        )
+    }
 
     LaunchedEffect(sectorId, cultivoId) {
         viewModel.preparar(sectorId, cultivoId)
@@ -165,6 +186,16 @@ fun CultivoFormScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (estado.esEdicion) "Guardar cambios" else "Registrar cultivo")
+            }
+
+            if (estado.esEdicion) {
+                OutlinedButton(
+                    onClick = { confirmarEliminar = true },
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Eliminar cultivo")
+                }
             }
         }
     }

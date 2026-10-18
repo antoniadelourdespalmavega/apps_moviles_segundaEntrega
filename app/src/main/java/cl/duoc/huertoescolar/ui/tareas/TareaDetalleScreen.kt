@@ -30,7 +30,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.getValue
+import cl.duoc.huertoescolar.ui.componentes.DialogoConfirmacion
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,11 +69,26 @@ fun TareaDetalleScreen(
     usuario: Usuario,
     alVolver: () -> Unit,
     alEditar: (Long) -> Unit,
+    alEliminada: (mensaje: String) -> Unit,
     viewModel: TareaDetalleViewModel = viewModel(factory = TareaDetalleViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     var mostrarRechazo by remember { mutableStateOf(false) }
+    var confirmarEliminar by remember { mutableStateOf(false) }
+
+    if (confirmarEliminar) {
+        DialogoConfirmacion(
+            titulo = "Eliminar tarea",
+            mensaje = "La tarea y sus evidencias se eliminaran. Esta accion no se puede deshacer.",
+            textoConfirmar = "Eliminar",
+            alConfirmar = {
+                confirmarEliminar = false
+                viewModel.eliminar(usuario.id, alEliminada)
+            },
+            alCancelar = { confirmarEliminar = false }
+        )
+    }
 
     val esAdmin = usuario.rol == Rol.ADMINISTRADOR
 
@@ -97,6 +114,10 @@ fun TareaDetalleScreen(
                     if (esAdmin && detalle != null && detalle.tarea.estado != EstadoTarea.VALIDADA) {
                         IconButton(onClick = { alEditar(tareaId) }) {
                             Icon(Icons.Filled.Edit, contentDescription = "Editar tarea")
+                        }
+                        // Una tarea validada no se elimina: forma parte del historial.
+                        IconButton(onClick = { confirmarEliminar = true }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Eliminar tarea")
                         }
                     }
                 }
@@ -241,7 +262,7 @@ fun TareaDetalleScreen(
                                 ) {
                                     Text(
                                         text = "Tu entrega esta esperando la revision de un " +
-                                            "docente o tallerista.",
+                                                "docente o tallerista.",
                                         style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier.padding(14.dp)
                                     )
@@ -329,7 +350,7 @@ fun TareaDetalleScreen(
                                     )
                                     Text(
                                         text = evidencia.usuarioNombre + " - " +
-                                            Fechas.formatearConHora(evidencia.evidencia.fechaRegistro),
+                                                Fechas.formatearConHora(evidencia.evidencia.fechaRegistro),
                                         style = MaterialTheme.typography.labelMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -348,7 +369,7 @@ fun TareaDetalleScreen(
                                 Column(modifier = Modifier.padding(12.dp)) {
                                     Text(
                                         text = validacion.validacion.resultado.etiqueta +
-                                            " por " + validacion.validadorNombre,
+                                                " por " + validacion.validadorNombre,
                                         style = MaterialTheme.typography.titleMedium
                                     )
                                     Text(

@@ -120,6 +120,16 @@ class SectorDetalleViewModel(private val repositorio: HuertoRepository) : ViewMo
         }
     }
 
+    /** Elimina el sector; el repositorio lo impide si tiene tareas registradas. */
+    fun eliminarSector(alEliminado: (String) -> Unit) {
+        viewModelScope.launch {
+            when (val resultado = repositorio.eliminarSector(sectorId.value)) {
+                is Operacion.Exito -> alEliminado(resultado.mensaje)
+                is Operacion.Error -> mensaje.value = resultado.mensaje
+            }
+        }
+    }
+
     fun limpiarMensaje() {
         mensaje.value = null
     }

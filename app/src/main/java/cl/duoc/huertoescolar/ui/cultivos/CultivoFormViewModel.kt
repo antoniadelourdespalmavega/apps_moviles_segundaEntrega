@@ -155,6 +155,16 @@ class CultivoFormViewModel(private val repositorio: HuertoRepository) : ViewMode
         }
     }
 
+    /** Elimina el cultivo en edicion; no se permite si tiene tareas registradas. */
+    fun eliminar(alEliminado: (String) -> Unit) {
+        viewModelScope.launch {
+            when (val resultado = repositorio.eliminarCultivo(_ui.value.id)) {
+                is Operacion.Exito -> alEliminado(resultado.mensaje)
+                is Operacion.Error -> _ui.update { it.copy(mensaje = resultado.mensaje) }
+            }
+        }
+    }
+
     fun limpiarMensaje() = _ui.update { it.copy(mensaje = null) }
 
     companion object {

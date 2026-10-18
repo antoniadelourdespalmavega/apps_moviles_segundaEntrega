@@ -155,6 +155,16 @@ class HuertoRepository(
         }
     }
 
+    /** Un cultivo con tareas no se elimina, para no perder su historial. */
+    suspend fun eliminarCultivo(id: Long): Operacion {
+        val cultivo = cultivoDao.porId(id) ?: return Operacion.Error("El cultivo ya no existe")
+        if (tareaDao.contarPorCultivo(id) > 0) {
+            return Operacion.Error("No se puede eliminar: el cultivo tiene tareas registradas")
+        }
+        cultivoDao.eliminar(cultivo)
+        return Operacion.Exito("Cultivo eliminado")
+    }
+
     suspend fun cambiarEstadoCultivo(id: Long, estado: EstadoCultivo): Operacion {
         val cultivo = cultivoDao.porId(id) ?: return Operacion.Error("El cultivo ya no existe")
         cultivoDao.actualizar(cultivo.copy(estado = estado))

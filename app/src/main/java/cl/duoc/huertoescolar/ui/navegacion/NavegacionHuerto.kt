@@ -155,7 +155,8 @@ fun NavegacionHuerto(
                         if (esAdministrador) {
                             navController.navigate(Rutas.cultivoForm(idSector, idCultivo))
                         }
-                    }
+                    },
+                    alEliminado = volverConAviso
                 )
             }
 
@@ -196,7 +197,8 @@ fun NavegacionHuerto(
                     sectorId = sectorId,
                     cultivoId = cultivoId,
                     alVolver = { navController.popBackStack() },
-                    alGuardado = volverConAviso
+                    alGuardado = volverConAviso,
+                    alEliminado = volverConAviso
                 )
             }
 
@@ -251,7 +253,8 @@ fun NavegacionHuerto(
                     alVolver = { navController.popBackStack() },
                     alEditar = { id ->
                         if (esAdministrador) navController.navigate(Rutas.tareaForm(id))
-                    }
+                    },
+                    alEliminada = volverConAviso
                 )
             }
 

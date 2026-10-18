@@ -26,7 +26,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.getValue
+import cl.duoc.huertoescolar.ui.componentes.DialogoConfirmacion
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,11 +63,26 @@ fun SectorDetalleScreen(
     alEditarSector: (Long) -> Unit,
     alCrearCultivo: (Long) -> Unit,
     alEditarCultivo: (Long, Long) -> Unit,
+    alEliminado: (mensaje: String) -> Unit,
     viewModel: SectorDetalleViewModel = viewModel(factory = SectorDetalleViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     var cultivoExpandido by remember { mutableStateOf(0L) }
+    var confirmarEliminar by remember { mutableStateOf(false) }
+
+    if (confirmarEliminar) {
+        DialogoConfirmacion(
+            titulo = "Eliminar sector",
+            mensaje = "Se eliminara el sector con sus cultivos. Un sector con tareas registradas no se puede eliminar.",
+            textoConfirmar = "Eliminar",
+            alConfirmar = {
+                confirmarEliminar = false
+                viewModel.eliminarSector(alEliminado)
+            },
+            alCancelar = { confirmarEliminar = false }
+        )
+    }
 
     LaunchedEffect(sectorId) {
         viewModel.establecerSector(sectorId)
@@ -88,6 +105,9 @@ fun SectorDetalleScreen(
                     if (esAdministrador && estado.sector != null) {
                         IconButton(onClick = { alEditarSector(sectorId) }) {
                             Icon(Icons.Filled.Edit, contentDescription = "Editar sector")
+                        }
+                        IconButton(onClick = { confirmarEliminar = true }) {
+                            Icon(Icons.Filled.Delete, contentDescription = "Eliminar sector")
                         }
                     }
                 }
@@ -201,7 +221,7 @@ fun SectorDetalleScreen(
                                 }
                                 Text(
                                     text = "Cosecha estimada: " +
-                                        Fechas.formatear(cultivo.fechaCosechaEstimada),
+                                            Fechas.formatear(cultivo.fechaCosechaEstimada),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
