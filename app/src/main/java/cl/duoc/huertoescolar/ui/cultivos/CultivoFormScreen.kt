@@ -41,6 +41,7 @@ fun CultivoFormScreen(
     sectorId: Long,
     cultivoId: Long,
     alVolver: () -> Unit,
+    alGuardado: (mensaje: String) -> Unit,
     viewModel: CultivoFormViewModel = viewModel(factory = CultivoFormViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
@@ -59,9 +60,10 @@ fun CultivoFormScreen(
         }
     }
 
+    // Al guardar bien se vuelve atras y la navegacion muestra la confirmacion.
     LaunchedEffect(estado.guardado) {
         if (estado.guardado) {
-            alVolver()
+            alGuardado(estado.mensaje ?: "Guardado correctamente")
         }
     }
 
@@ -117,7 +119,7 @@ fun CultivoFormScreen(
             )
             Text(
                 text = "Siembra registrada: " + estado.fechaSiembra +
-                    ". La cosecha no puede ser anterior a esa fecha.",
+                        ". La cosecha no puede ser anterior a esa fecha.",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

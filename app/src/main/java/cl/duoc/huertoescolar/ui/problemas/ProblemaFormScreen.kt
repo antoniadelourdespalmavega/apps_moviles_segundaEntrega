@@ -38,6 +38,7 @@ import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
 fun ProblemaFormScreen(
     usuarioId: Long,
     alVolver: () -> Unit,
+    alGuardado: (mensaje: String) -> Unit,
     viewModel: ProblemaFormViewModel = viewModel(factory = ProblemaFormViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
@@ -55,9 +56,10 @@ fun ProblemaFormScreen(
         }
     }
 
+    // Al guardar bien se vuelve atras y la navegacion muestra la confirmacion.
     LaunchedEffect(estado.guardado) {
         if (estado.guardado) {
-            alVolver()
+            alGuardado(estado.mensaje ?: "Guardado correctamente")
         }
     }
 

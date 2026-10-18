@@ -42,6 +42,7 @@ fun TareaFormScreen(
     tareaId: Long,
     usuarioId: Long,
     alVolver: () -> Unit,
+    alGuardado: (mensaje: String) -> Unit,
     viewModel: TareaFormViewModel = viewModel(factory = TareaFormViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
@@ -53,7 +54,7 @@ fun TareaFormScreen(
     val cultivosDelSector = cultivos.filter { it.sectorId == estado.sectorId }
     // "Sin cultivo" (id null) permite quitar un cultivo elegido por error.
     val opcionesCultivo = listOf(OpcionCultivo(null, "Sin cultivo asociado")) +
-        cultivosDelSector.map { OpcionCultivo(it.id, it.nombre) }
+            cultivosDelSector.map { OpcionCultivo(it.id, it.nombre) }
 
     LaunchedEffect(tareaId) {
         viewModel.cargar(tareaId)
@@ -67,9 +68,10 @@ fun TareaFormScreen(
         }
     }
 
+    // Al guardar bien se vuelve atras y la navegacion muestra la confirmacion.
     LaunchedEffect(estado.guardado) {
         if (estado.guardado) {
-            alVolver()
+            alGuardado(estado.mensaje ?: "Guardado correctamente")
         }
     }
 
@@ -158,7 +160,7 @@ fun TareaFormScreen(
 
             Text(
                 text = "La tarea se crea en estado Pendiente y debe ser validada por un " +
-                    "docente o tallerista cuando el estudiante la entregue.",
+                        "docente o tallerista cuando el estudiante la entregue.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

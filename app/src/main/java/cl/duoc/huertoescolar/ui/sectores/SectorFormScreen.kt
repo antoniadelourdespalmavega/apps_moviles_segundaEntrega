@@ -49,6 +49,7 @@ import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
 fun SectorFormScreen(
     sectorId: Long,
     alVolver: () -> Unit,
+    alGuardado: (mensaje: String) -> Unit,
     alCrearCultivo: (sectorId: Long) -> Unit,
     alEditarCultivo: (sectorId: Long, cultivoId: Long) -> Unit,
     viewModel: SectorFormViewModel = viewModel(factory = SectorFormViewModel.Factory)
@@ -71,9 +72,10 @@ fun SectorFormScreen(
     }
 
     // Cuando el guardado termina bien, se vuelve al listado.
+    // Al guardar bien se vuelve atras y la navegacion muestra la confirmacion.
     LaunchedEffect(estado.guardado) {
         if (estado.guardado) {
-            alVolver()
+            alGuardado(estado.mensaje ?: "Guardado correctamente")
         }
     }
 
@@ -185,7 +187,7 @@ fun SectorFormScreen(
                                 Text(cultivo.nombre, style = MaterialTheme.typography.titleMedium)
                                 Text(
                                     text = "Riego cada " + cultivo.frecuenciaRiegoDias + " dias - cosecha " +
-                                        Fechas.formatear(cultivo.fechaCosechaEstimada),
+                                            Fechas.formatear(cultivo.fechaCosechaEstimada),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )

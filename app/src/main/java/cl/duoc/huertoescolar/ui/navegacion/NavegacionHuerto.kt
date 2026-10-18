@@ -1,6 +1,16 @@
 package cl.duoc.huertoescolar.ui.navegacion
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Scaffold
@@ -82,223 +92,246 @@ fun NavegacionHuerto(
 
     val esAdministrador = usuario.rol == Rol.ADMINISTRADOR
 
-    NavHost(navController = navController, startDestination = Rutas.DASHBOARD) {
+    // Confirmaciones de exito: un formulario que guardo bien vuelve atras y el
+    // mensaje aparece en la pantalla anterior (por ejemplo, "Tarea creada...").
+    val avisos = remember { SnackbarHostState() }
+    val alcance = rememberCoroutineScope()
+    val volverConAviso: (String) -> Unit = { mensaje ->
+        navController.popBackStack()
+        alcance.launch { avisos.showSnackbar(mensaje) }
+    }
 
-        composable(Rutas.DASHBOARD) {
-            DashboardScreen(
-                usuario = usuario,
-                alCerrarSesion = { sesionViewModel.cerrarSesion() },
-                alIrASectores = { navController.navigate(Rutas.SECTORES) },
-                alIrATareas = { categoria -> navController.navigate(Rutas.tareas(categoria?.name)) },
-                alCrearTarea = {
-                    if (esAdministrador) navController.navigate(Rutas.tareaForm(0))
-                },
-                alIrAPerfil = { navController.navigate(Rutas.PERFIL) },
-                alIrACultivos = { navController.navigate(Rutas.CULTIVOS) },
-                alIrARevision = {
-                    if (esAdministrador) navController.navigate(Rutas.REVISION)
-                },
-                alIrAProblemas = { navController.navigate(Rutas.PROBLEMAS) },
-                alIrAHistorial = { navController.navigate(Rutas.HISTORIAL) },
-                alIrASensores = { navController.navigate(Rutas.SENSORES) },
-                alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) }
-            )
-        }
+    Box(modifier = Modifier.fillMaxSize()) {
+        NavHost(navController = navController, startDestination = Rutas.DASHBOARD) {
 
-        composable(Rutas.SECTORES) {
-            SectoresScreen(
-                esAdministrador = esAdministrador,
-                alVolver = { navController.popBackStack() },
-                alAbrirSector = { id -> navController.navigate(Rutas.sectorDetalle(id)) },
-                alCrearSector = {
-                    if (esAdministrador) navController.navigate(Rutas.sectorForm(0))
+            composable(Rutas.DASHBOARD) {
+                DashboardScreen(
+                    usuario = usuario,
+                    alCerrarSesion = { sesionViewModel.cerrarSesion() },
+                    alIrASectores = { navController.navigate(Rutas.SECTORES) },
+                    alIrATareas = { categoria -> navController.navigate(Rutas.tareas(categoria?.name)) },
+                    alCrearTarea = {
+                        if (esAdministrador) navController.navigate(Rutas.tareaForm(0))
+                    },
+                    alIrAPerfil = { navController.navigate(Rutas.PERFIL) },
+                    alIrACultivos = { navController.navigate(Rutas.CULTIVOS) },
+                    alIrARevision = {
+                        if (esAdministrador) navController.navigate(Rutas.REVISION)
+                    },
+                    alIrAProblemas = { navController.navigate(Rutas.PROBLEMAS) },
+                    alIrAHistorial = { navController.navigate(Rutas.HISTORIAL) },
+                    alIrASensores = { navController.navigate(Rutas.SENSORES) },
+                    alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) }
+                )
+            }
+
+            composable(Rutas.SECTORES) {
+                SectoresScreen(
+                    esAdministrador = esAdministrador,
+                    alVolver = { navController.popBackStack() },
+                    alAbrirSector = { id -> navController.navigate(Rutas.sectorDetalle(id)) },
+                    alCrearSector = {
+                        if (esAdministrador) navController.navigate(Rutas.sectorForm(0))
+                    }
+                )
+            }
+
+            composable(
+                route = Rutas.SECTOR_DETALLE + "/{sectorId}",
+                arguments = listOf(navArgument("sectorId") { type = NavType.LongType })
+            ) { entrada ->
+                val sectorId = entrada.arguments?.getLong("sectorId") ?: 0L
+                SectorDetalleScreen(
+                    sectorId = sectorId,
+                    esAdministrador = esAdministrador,
+                    alVolver = { navController.popBackStack() },
+                    alEditarSector = { id ->
+                        if (esAdministrador) navController.navigate(Rutas.sectorForm(id))
+                    },
+                    alCrearCultivo = { id ->
+                        if (esAdministrador) navController.navigate(Rutas.cultivoForm(id, 0))
+                    },
+                    alEditarCultivo = { idSector, idCultivo ->
+                        if (esAdministrador) {
+                            navController.navigate(Rutas.cultivoForm(idSector, idCultivo))
+                        }
+                    }
+                )
+            }
+
+            composable(
+                route = Rutas.SECTOR_FORM + "/{sectorId}",
+                arguments = listOf(navArgument("sectorId") { type = NavType.LongType })
+            ) { entrada ->
+                if (!esAdministrador) {
+                    PantallaSinPermiso { navController.popBackStack() }
+                    return@composable
                 }
-            )
-        }
-
-        composable(
-            route = Rutas.SECTOR_DETALLE + "/{sectorId}",
-            arguments = listOf(navArgument("sectorId") { type = NavType.LongType })
-        ) { entrada ->
-            val sectorId = entrada.arguments?.getLong("sectorId") ?: 0L
-            SectorDetalleScreen(
-                sectorId = sectorId,
-                esAdministrador = esAdministrador,
-                alVolver = { navController.popBackStack() },
-                alEditarSector = { id ->
-                    if (esAdministrador) navController.navigate(Rutas.sectorForm(id))
-                },
-                alCrearCultivo = { id ->
-                    if (esAdministrador) navController.navigate(Rutas.cultivoForm(id, 0))
-                },
-                alEditarCultivo = { idSector, idCultivo ->
-                    if (esAdministrador) {
+                val sectorId = entrada.arguments?.getLong("sectorId") ?: 0L
+                SectorFormScreen(
+                    sectorId = sectorId,
+                    alVolver = { navController.popBackStack() },
+                    alGuardado = volverConAviso,
+                    alCrearCultivo = { idSector -> navController.navigate(Rutas.cultivoForm(idSector, 0)) },
+                    alEditarCultivo = { idSector, idCultivo ->
                         navController.navigate(Rutas.cultivoForm(idSector, idCultivo))
                     }
-                }
-            )
-        }
-
-        composable(
-            route = Rutas.SECTOR_FORM + "/{sectorId}",
-            arguments = listOf(navArgument("sectorId") { type = NavType.LongType })
-        ) { entrada ->
-            if (!esAdministrador) {
-                PantallaSinPermiso { navController.popBackStack() }
-                return@composable
+                )
             }
-            val sectorId = entrada.arguments?.getLong("sectorId") ?: 0L
-            SectorFormScreen(
-                sectorId = sectorId,
-                alVolver = { navController.popBackStack() },
-                alCrearCultivo = { idSector -> navController.navigate(Rutas.cultivoForm(idSector, 0)) },
-                alEditarCultivo = { idSector, idCultivo ->
-                    navController.navigate(Rutas.cultivoForm(idSector, idCultivo))
-                }
-            )
-        }
 
-        composable(
-            route = Rutas.CULTIVO_FORM + "/{sectorId}/{cultivoId}",
-            arguments = listOf(
-                navArgument("sectorId") { type = NavType.LongType },
-                navArgument("cultivoId") { type = NavType.LongType }
-            )
-        ) { entrada ->
-            if (!esAdministrador) {
-                PantallaSinPermiso { navController.popBackStack() }
-                return@composable
+            composable(
+                route = Rutas.CULTIVO_FORM + "/{sectorId}/{cultivoId}",
+                arguments = listOf(
+                    navArgument("sectorId") { type = NavType.LongType },
+                    navArgument("cultivoId") { type = NavType.LongType }
+                )
+            ) { entrada ->
+                if (!esAdministrador) {
+                    PantallaSinPermiso { navController.popBackStack() }
+                    return@composable
+                }
+                val sectorId = entrada.arguments?.getLong("sectorId") ?: 0L
+                val cultivoId = entrada.arguments?.getLong("cultivoId") ?: 0L
+                CultivoFormScreen(
+                    sectorId = sectorId,
+                    cultivoId = cultivoId,
+                    alVolver = { navController.popBackStack() },
+                    alGuardado = volverConAviso
+                )
             }
-            val sectorId = entrada.arguments?.getLong("sectorId") ?: 0L
-            val cultivoId = entrada.arguments?.getLong("cultivoId") ?: 0L
-            CultivoFormScreen(
-                sectorId = sectorId,
-                cultivoId = cultivoId,
-                alVolver = { navController.popBackStack() }
-            )
-        }
 
-        composable(
-            route = Rutas.TAREAS + "?categoria={categoria}",
-            arguments = listOf(
-                navArgument("categoria") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                }
-            )
-        ) { entrada ->
-            val categoria = entrada.arguments?.getString("categoria")
-                ?.let { nombre -> CategoriaTarea.entries.firstOrNull { it.name == nombre } }
-            TareasScreen(
-                usuario = usuario,
-                categoriaInicial = categoria,
-                alVolver = { navController.popBackStack() },
-                alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) },
-                alCrearTarea = {
-                    if (esAdministrador) navController.navigate(Rutas.tareaForm(0))
-                }
-            )
-        }
-
-        composable(
-            route = Rutas.TAREA_FORM + "/{tareaId}",
-            arguments = listOf(navArgument("tareaId") { type = NavType.LongType })
-        ) { entrada ->
-            if (!esAdministrador) {
-                PantallaSinPermiso { navController.popBackStack() }
-                return@composable
+            composable(
+                route = Rutas.TAREAS + "?categoria={categoria}",
+                arguments = listOf(
+                    navArgument("categoria") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    }
+                )
+            ) { entrada ->
+                val categoria = entrada.arguments?.getString("categoria")
+                    ?.let { nombre -> CategoriaTarea.entries.firstOrNull { it.name == nombre } }
+                TareasScreen(
+                    usuario = usuario,
+                    categoriaInicial = categoria,
+                    alVolver = { navController.popBackStack() },
+                    alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) },
+                    alCrearTarea = {
+                        if (esAdministrador) navController.navigate(Rutas.tareaForm(0))
+                    }
+                )
             }
-            val tareaId = entrada.arguments?.getLong("tareaId") ?: 0L
-            TareaFormScreen(
-                tareaId = tareaId,
-                usuarioId = usuario.id,
-                alVolver = { navController.popBackStack() }
-            )
-        }
 
-        composable(
-            route = Rutas.TAREA_DETALLE + "/{tareaId}",
-            arguments = listOf(navArgument("tareaId") { type = NavType.LongType })
-        ) { entrada ->
-            val tareaId = entrada.arguments?.getLong("tareaId") ?: 0L
-            TareaDetalleScreen(
-                tareaId = tareaId,
-                usuario = usuario,
-                alVolver = { navController.popBackStack() },
-                alEditar = { id ->
-                    if (esAdministrador) navController.navigate(Rutas.tareaForm(id))
+            composable(
+                route = Rutas.TAREA_FORM + "/{tareaId}",
+                arguments = listOf(navArgument("tareaId") { type = NavType.LongType })
+            ) { entrada ->
+                if (!esAdministrador) {
+                    PantallaSinPermiso { navController.popBackStack() }
+                    return@composable
                 }
-            )
-        }
-
-        composable(Rutas.CULTIVOS) {
-            CultivosInfoScreen(
-                esAdministrador = esAdministrador,
-                alVolver = { navController.popBackStack() },
-                alEditarCultivo = { idSector, idCultivo ->
-                    if (esAdministrador) navController.navigate(Rutas.cultivoForm(idSector, idCultivo))
-                },
-                // Sector 0: el formulario muestra el selector de sector.
-                alCrearCultivo = {
-                    if (esAdministrador) navController.navigate(Rutas.cultivoForm(0, 0))
-                }
-            )
-        }
-
-        composable(Rutas.REVISION) {
-            if (!esAdministrador) {
-                PantallaSinPermiso { navController.popBackStack() }
-                return@composable
+                val tareaId = entrada.arguments?.getLong("tareaId") ?: 0L
+                TareaFormScreen(
+                    tareaId = tareaId,
+                    usuarioId = usuario.id,
+                    alVolver = { navController.popBackStack() },
+                    alGuardado = volverConAviso
+                )
             }
-            RevisionScreen(
-                usuario = usuario,
-                alVolver = { navController.popBackStack() },
-                alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) }
-            )
-        }
 
-        composable(Rutas.PERFIL) {
-            PerfilScreen(
-                usuario = usuario,
-                alVolver = { navController.popBackStack() },
-                alActualizar = { actualizado -> sesionViewModel.actualizarUsuario(actualizado) }
-            )
-        }
-
-        composable(Rutas.PROBLEMAS) {
-            ProblemasScreen(
-                usuario = usuario,
-                alVolver = { navController.popBackStack() },
-                alReportar = {
-                    if (!esAdministrador) navController.navigate(Rutas.PROBLEMA_FORM)
-                }
-            )
-        }
-
-        composable(Rutas.PROBLEMA_FORM) {
-            if (esAdministrador) {
-                PantallaSinPermiso { navController.popBackStack() }
-                return@composable
+            composable(
+                route = Rutas.TAREA_DETALLE + "/{tareaId}",
+                arguments = listOf(navArgument("tareaId") { type = NavType.LongType })
+            ) { entrada ->
+                val tareaId = entrada.arguments?.getLong("tareaId") ?: 0L
+                TareaDetalleScreen(
+                    tareaId = tareaId,
+                    usuario = usuario,
+                    alVolver = { navController.popBackStack() },
+                    alEditar = { id ->
+                        if (esAdministrador) navController.navigate(Rutas.tareaForm(id))
+                    }
+                )
             }
-            ProblemaFormScreen(
-                usuarioId = usuario.id,
-                alVolver = { navController.popBackStack() }
-            )
-        }
 
-        composable(Rutas.HISTORIAL) {
-            HistorialScreen(
-                usuario = usuario,
-                alVolver = { navController.popBackStack() }
-            )
-        }
+            composable(Rutas.CULTIVOS) {
+                CultivosInfoScreen(
+                    esAdministrador = esAdministrador,
+                    alVolver = { navController.popBackStack() },
+                    alEditarCultivo = { idSector, idCultivo ->
+                        if (esAdministrador) navController.navigate(Rutas.cultivoForm(idSector, idCultivo))
+                    },
+                    // Sector 0: el formulario muestra el selector de sector.
+                    alCrearCultivo = {
+                        if (esAdministrador) navController.navigate(Rutas.cultivoForm(0, 0))
+                    }
+                )
+            }
 
-        composable(Rutas.SENSORES) {
-            SensoresScreen(
-                alVolver = { navController.popBackStack() }
-            )
+            composable(Rutas.REVISION) {
+                if (!esAdministrador) {
+                    PantallaSinPermiso { navController.popBackStack() }
+                    return@composable
+                }
+                RevisionScreen(
+                    usuario = usuario,
+                    alVolver = { navController.popBackStack() },
+                    alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) }
+                )
+            }
+
+            composable(Rutas.PERFIL) {
+                PerfilScreen(
+                    usuario = usuario,
+                    alVolver = { navController.popBackStack() },
+                    alActualizar = { actualizado -> sesionViewModel.actualizarUsuario(actualizado) }
+                )
+            }
+
+            composable(Rutas.PROBLEMAS) {
+                ProblemasScreen(
+                    usuario = usuario,
+                    alVolver = { navController.popBackStack() },
+                    alReportar = {
+                        if (!esAdministrador) navController.navigate(Rutas.PROBLEMA_FORM)
+                    }
+                )
+            }
+
+            composable(Rutas.PROBLEMA_FORM) {
+                if (esAdministrador) {
+                    PantallaSinPermiso { navController.popBackStack() }
+                    return@composable
+                }
+                ProblemaFormScreen(
+                    usuarioId = usuario.id,
+                    alVolver = { navController.popBackStack() },
+                    alGuardado = volverConAviso
+                )
+            }
+
+            composable(Rutas.HISTORIAL) {
+                HistorialScreen(
+                    usuario = usuario,
+                    alVolver = { navController.popBackStack() }
+                )
+            }
+
+            composable(Rutas.SENSORES) {
+                SensoresScreen(
+                    alVolver = { navController.popBackStack() }
+                )
+            }
         }
+        // Se ubica sobre los botones flotantes para no taparlos.
+        SnackbarHost(
+            hostState = avisos,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(bottom = 88.dp)
+        )
     }
 }
 
