@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Carpeta interna donde se guardan las fotografias de evidencias y reportes. -->
+    <files-path
+        name="evidencias"
+        path="evidencias/" />
+    <cache-path
+        name="capturas"
+        path="capturas/" />
+</paths>
