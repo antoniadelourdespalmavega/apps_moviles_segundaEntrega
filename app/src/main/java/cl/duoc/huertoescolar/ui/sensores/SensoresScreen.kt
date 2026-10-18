@@ -55,7 +55,7 @@ fun SensoresScreen(
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
     val opcionesFiltro = listOf(OpcionSector(null, "Todos los sectores")) +
-        estado.sectores.map { OpcionSector(it.id, it.codigo + " - " + it.nombre) }
+            estado.sectores.map { OpcionSector(it.id, it.codigo + " - " + it.nombre) }
 
     Scaffold(
         topBar = { BarraSuperior(titulo = "Sensores simulados", alVolver = alVolver) }
@@ -78,14 +78,14 @@ fun SensoresScreen(
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Text(
-                                text = "Simulacion academica",
+                                text = "Simulación académica",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = ColoresHuerto.actual.informacion
                             )
                             Text(
                                 text = "Estos valores son ficticios y se generan dentro de la " +
-                                    "aplicacion. No provienen de sensores fisicos ni activan " +
-                                    "riego, bombas o alarmas.",
+                                        "aplicación. No provienen de sensores físicos ni activan " +
+                                        "riego, bombas o alarmas.",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }

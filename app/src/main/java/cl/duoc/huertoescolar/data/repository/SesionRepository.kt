@@ -22,7 +22,7 @@ class SesionRepository(private val usuarioDao: UsuarioDao) {
         val usuarioLimpio = nombreUsuario.trim().lowercase()
         val correoLimpio = correo.trim().lowercase()
         if (usuarioDao.contarNombreUsuario(usuarioLimpio) > 0) {
-            return Operacion.Error("Ese nombre de usuario ya esta en uso")
+            return Operacion.Error("Ese nombre de usuario ya está en uso")
         }
         if (usuarioDao.contarCorreo(correoLimpio) > 0) {
             return Operacion.Error("Ese correo ya esta registrado")
@@ -38,7 +38,7 @@ class SesionRepository(private val usuarioDao: UsuarioDao) {
                 taller = taller.trim()
             )
         )
-        return Operacion.Exito("Cuenta creada. Ya puedes iniciar sesion")
+        return Operacion.Exito("Cuenta creada. Ya puedes iniciar sesión")
     }
 
     /**
@@ -60,7 +60,7 @@ class SesionRepository(private val usuarioDao: UsuarioDao) {
             return null to Operacion.Error("Ese correo ya esta registrado por otra cuenta")
         }
         if (claveNueva.isNotEmpty() && claveActual != actual.clave) {
-            return null to Operacion.Error("La contrasena actual no es correcta")
+            return null to Operacion.Error("La contraseña actual no es correcta")
         }
         val actualizado = actual.copy(
             nombre = nombre.trim().replace(Regex("\\s+"), " "),

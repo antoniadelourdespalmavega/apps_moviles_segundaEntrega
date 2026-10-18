@@ -68,14 +68,14 @@ fun RevisionScreen(
     }
 
     Scaffold(
-        topBar = { BarraSuperior(titulo = "Revision de actividades", alVolver = alVolver) },
+        topBar = { BarraSuperior(titulo = "Revisión de actividades", alVolver = alVolver) },
         snackbarHost = { SnackbarHost(snackbar) }
     ) { innerPadding ->
         when {
             estado.cargando -> CargandoPantalla(modifier = Modifier.padding(innerPadding))
             estado.entregas.isEmpty() -> EstadoVacio(
                 titulo = "No hay entregas por revisar",
-                detalle = "Cuando un estudiante entregue una tarea, aparecera aqui para validarla o rechazarla.",
+                detalle = "Cuando un estudiante entregue una tarea, aparecerá aquí para validarla o rechazarla.",
                 icono = Icons.Filled.FactCheck,
                 modifier = Modifier.padding(innerPadding)
             )

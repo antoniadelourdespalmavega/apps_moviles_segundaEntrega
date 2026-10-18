@@ -131,57 +131,57 @@ fun HistorialScreen(
                 }
             }
 
-        when {
-            estado.cargando -> CargandoPantalla()
-            estado.registros.isEmpty() -> EstadoVacio(
-                titulo = if (estado.total == 0) "El historial esta vacio" else "Nada para estos filtros",
-                detalle = if (estado.total == 0) {
-                    "Las tareas asignadas, entregas, revisiones y reportes apareceran aqui en orden cronologico."
-                } else {
-                    "Cambia los filtros o usa Limpiar filtros para ver todo."
-                },
-                icono = Icons.Filled.History
-            )
-            else -> LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(estado.registros, key = { it.id }) { registro ->
-                    val color = when (registro.tipo) {
-                        TipoRegistro.TAREA -> ColoresHuerto.actual.neutro
-                        TipoRegistro.EVIDENCIA -> ColoresHuerto.actual.informacion
-                        TipoRegistro.VALIDACION -> ColoresHuerto.actual.exito
-                        TipoRegistro.REPORTE -> ColoresHuerto.actual.error
-                    }
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(14.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+            when {
+                estado.cargando -> CargandoPantalla()
+                estado.registros.isEmpty() -> EstadoVacio(
+                    titulo = if (estado.total == 0) "El historial está vacío" else "Nada para estos filtros",
+                    detalle = if (estado.total == 0) {
+                        "Las tareas asignadas, entregas, revisiones y reportes aparecerán aquí en orden cronológico."
+                    } else {
+                        "Cambia los filtros o usa Limpiar filtros para ver todo."
+                    },
+                    icono = Icons.Filled.History
+                )
+                else -> LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(estado.registros, key = { it.id }) { registro ->
+                        val color = when (registro.tipo) {
+                            TipoRegistro.TAREA -> ColoresHuerto.actual.neutro
+                            TipoRegistro.EVIDENCIA -> ColoresHuerto.actual.informacion
+                            TipoRegistro.VALIDACION -> ColoresHuerto.actual.exito
+                            TipoRegistro.REPORTE -> ColoresHuerto.actual.error
+                        }
+                        Card(modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = registro.titulo,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    ChipDeEstado(texto = registro.tipo.etiqueta, color = color)
+                                }
                                 Text(
-                                    text = registro.titulo,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    modifier = Modifier.weight(1f)
+                                    text = registro.detalle,
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
-                                ChipDeEstado(texto = registro.tipo.etiqueta, color = color)
+                                Text(
+                                    text = registro.autor + " - " + Fechas.formatearConHora(registro.fecha),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
-                            Text(
-                                text = registro.detalle,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = registro.autor + " - " + Fechas.formatearConHora(registro.fecha),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                         }
                     }
                 }
             }
-        }
         }
     }
 }

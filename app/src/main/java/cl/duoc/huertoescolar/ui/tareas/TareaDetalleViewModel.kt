@@ -127,7 +127,7 @@ class TareaDetalleViewModel(private val repositorio: TareaRepository) : ViewMode
         if (errores.isNotEmpty()) {
             formulario.value = form.copy(
                 errores = errores,
-                mensaje = "Completa el comentario y adjunta una fotografia"
+                mensaje = "Completa el comentario y adjunta una fotografía"
             )
             return
         }

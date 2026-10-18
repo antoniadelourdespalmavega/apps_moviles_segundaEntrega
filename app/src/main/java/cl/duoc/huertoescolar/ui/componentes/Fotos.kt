@@ -81,7 +81,7 @@ fun VistaPreviaFoto(
                         .data(File(ruta))
                         .crossfade(true)
                         .build(),
-                    contentDescription = "Fotografia de evidencia",
+                    contentDescription = "Fotografía de evidencia",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -89,7 +89,7 @@ fun VistaPreviaFoto(
         }
         if (!existe) {
             Text(
-                text = if (ruta == null) "Sin fotografia adjunta" else "La fotografia no esta disponible",
+                text = if (ruta == null) "Sin fotografía adjunta" else "La fotografía no está disponible",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -127,7 +127,7 @@ fun SelectorDeFoto(
         } else {
             // La captura fue cancelada: se borra el archivo vacio creado antes.
             archivo?.delete()
-            alAvisar("Captura cancelada: no se guardo ninguna fotografia")
+            alAvisar("Captura cancelada: no se guardó ninguna fotografía")
         }
         rutaPendiente = null
     }
@@ -136,11 +136,11 @@ fun SelectorDeFoto(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri == null) {
-            alAvisar("No se selecciono ninguna fotografia")
+            alAvisar("No se seleccionó ninguna fotografía")
         } else {
             val ruta = Imagenes.copiarDesdeUri(contexto, uri)
             if (ruta == null) {
-                alAvisar("No se pudo copiar la fotografia seleccionada")
+                alAvisar("No se pudo copiar la fotografía seleccionada")
             } else {
                 alSeleccionar(ruta)
             }
@@ -170,7 +170,7 @@ fun SelectorDeFoto(
                     modifier = Modifier.size(18.dp)
                 )
                 Text(
-                    text = "Camara",
+                    text = "Cámara",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(start = 6.dp)
                 )
@@ -189,7 +189,7 @@ fun SelectorDeFoto(
                     modifier = Modifier.size(18.dp)
                 )
                 Text(
-                    text = "Galeria",
+                    text = "Galería",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(start = 6.dp)
                 )

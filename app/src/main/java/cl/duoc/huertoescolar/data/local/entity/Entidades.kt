@@ -270,6 +270,6 @@ data class LecturaSensor(
     val humedadSuelo: Int,
     val temperatura: Double,
     val humedadAmbiente: Int,
-    val origen: String = "Simulacion academica",
+    val origen: String = "Simulación académica",
     val estado: EstadoLectura
 )

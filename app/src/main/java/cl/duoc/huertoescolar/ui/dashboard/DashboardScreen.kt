@@ -93,7 +93,7 @@ fun DashboardScreen(
                         Icon(Icons.Filled.AccountCircle, contentDescription = "Mi perfil")
                     }
                     IconButton(onClick = alCerrarSesion) {
-                        Icon(Icons.Filled.Logout, contentDescription = "Cerrar sesion")
+                        Icon(Icons.Filled.Logout, contentDescription = "Cerrar sesión")
                     }
                 }
             )
@@ -159,7 +159,7 @@ fun DashboardScreen(
                         alTocar = { alIrATareas(CategoriaTarea.ATRASADA) }
                     )
                     TarjetaResumen(
-                        titulo = if (esAdmin) "Por validar" else "En revision",
+                        titulo = if (esAdmin) "Por validar" else "En revisión",
                         valor = (estado.conteo[CategoriaTarea.POR_VALIDAR] ?: 0).toString(),
                         color = ColoresHuerto.actual.advertencia,
                         modifier = Modifier.weight(1f),
@@ -295,7 +295,7 @@ fun DashboardScreen(
 
             item {
                 Text(
-                    text = if (esAdmin) "Actividades en curso" else "Mis proximas tareas",
+                    text = if (esAdmin) "Actividades en curso" else "Mis próximas tareas",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -305,9 +305,9 @@ fun DashboardScreen(
                     EstadoVacio(
                         titulo = "No hay tareas abiertas",
                         detalle = if (esAdmin) {
-                            "Usa el boton Nueva tarea para crear y asignar la primera."
+                            "Usa el botón Nueva tarea para crear y asignar la primera."
                         } else {
-                            "Cuando el docente te asigne una tarea, aparecera aqui."
+                            "Cuando el docente te asigne una tarea, aparecerá aquí."
                         },
                         icono = Icons.Filled.Grass
                     )
@@ -339,7 +339,7 @@ fun DashboardScreen(
                             }
                             Text(
                                 text = detalle.sectorNombre + " - " +
-                                    Fechas.formatear(detalle.tarea.fechaProgramada),
+                                        Fechas.formatear(detalle.tarea.fechaProgramada),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

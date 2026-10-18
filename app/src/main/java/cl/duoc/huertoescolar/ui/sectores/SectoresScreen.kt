@@ -76,11 +76,11 @@ fun SectoresScreen(
         when {
             estado.cargando -> CargandoPantalla(modifier = Modifier.padding(innerPadding))
             estado.sectores.isEmpty() -> EstadoVacio(
-                titulo = "Aun no hay sectores",
+                titulo = "Aún no hay sectores",
                 detalle = if (esAdministrador) {
-                    "Crea el primer sector con el boton Nuevo sector."
+                    "Crea el primer sector con el botón Nuevo sector."
                 } else {
-                    "El docente todavia no registra sectores."
+                    "El docente todavía no registra sectores."
                 },
                 icono = Icons.Filled.Agriculture,
                 modifier = Modifier.padding(innerPadding)
@@ -122,7 +122,7 @@ fun SectoresScreen(
                             )
                             Text(
                                 text = resumen.totalCultivos.toString() + " cultivos - " +
-                                    resumen.tareasAbiertas + " tareas abiertas",
+                                        resumen.tareasAbiertas + " tareas abiertas",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(

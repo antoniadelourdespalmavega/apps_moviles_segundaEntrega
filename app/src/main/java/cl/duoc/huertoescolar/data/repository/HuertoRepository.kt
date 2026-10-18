@@ -53,7 +53,7 @@ class HuertoRepository(
     ): Operacion {
         val codigoLimpio = codigo.trim().uppercase()
         if (sectorDao.existeCodigo(codigoLimpio, id) > 0) {
-            return Operacion.Error("Ya existe otro sector con el codigo " + codigoLimpio)
+            return Operacion.Error("Ya existe otro sector con el código " + codigoLimpio)
         }
         val ahora = Fechas.ahora()
         return if (id == 0L) {

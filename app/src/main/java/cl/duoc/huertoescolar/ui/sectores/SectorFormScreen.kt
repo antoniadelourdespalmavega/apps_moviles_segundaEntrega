@@ -105,7 +105,7 @@ fun SectorFormScreen(
             CampoTexto(
                 valor = estado.codigo,
                 alCambiar = { viewModel.cambiarCodigo(it) },
-                etiqueta = "Codigo del sector",
+                etiqueta = "Código del sector",
                 error = estado.errores[Validaciones.CAMPO_CODIGO],
                 ayuda = "Entre 3 y 10 caracteres. Ejemplo: S-01"
             )
@@ -118,7 +118,7 @@ fun SectorFormScreen(
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
-                etiqueta = "Descripcion general",
+                etiqueta = "Descripción general",
                 error = estado.errores[Validaciones.CAMPO_DESCRIPCION],
                 lineaUnica = false,
                 minimoDeLineas = 2
@@ -126,7 +126,7 @@ fun SectorFormScreen(
             CampoTexto(
                 valor = estado.ubicacion,
                 alCambiar = { viewModel.cambiarUbicacion(it) },
-                etiqueta = "Ubicacion dentro del huerto",
+                etiqueta = "Ubicación dentro del huerto",
                 error = estado.errores[Validaciones.CAMPO_UBICACION]
             )
 
@@ -163,14 +163,14 @@ fun SectorFormScreen(
             )
             if (!estado.esEdicion) {
                 Text(
-                    text = "Primero crea el sector; luego podras agregarle cultivos aqui mismo.",
+                    text = "Primero crea el sector; luego podrás agregarle cultivos aquí mismo.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
                 if (cultivos.isEmpty()) {
                     Text(
-                        text = "Este sector todavia no tiene cultivos.",
+                        text = "Este sector todavía no tiene cultivos.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -186,7 +186,7 @@ fun SectorFormScreen(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(cultivo.nombre, style = MaterialTheme.typography.titleMedium)
                                 Text(
-                                    text = "Riego cada " + cultivo.frecuenciaRiegoDias + " dias - cosecha " +
+                                    text = "Riego cada " + cultivo.frecuenciaRiegoDias + " días - cosecha " +
                                             Fechas.formatear(cultivo.fechaCosechaEstimada),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant

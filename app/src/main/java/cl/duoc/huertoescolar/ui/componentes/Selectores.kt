@@ -51,7 +51,7 @@ fun <T> SelectorDesplegable(
                 enabled = habilitado,
                 isError = error != null,
                 label = { Text(etiqueta) },
-                placeholder = { Text(if (opciones.isEmpty()) textoVacio else "Selecciona una opcion") },
+                placeholder = { Text(if (opciones.isEmpty()) textoVacio else "Selecciona una opción") },
                 trailingIcon = {
                     IconButton(
                         onClick = { if (habilitado && opciones.isNotEmpty()) expandido = true }

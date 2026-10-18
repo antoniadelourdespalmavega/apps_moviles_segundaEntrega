@@ -114,7 +114,7 @@ class TareaRepository(
             return Operacion.Error("Solo el responsable asignado puede iniciar esta tarea")
         }
         if (tarea.estado != EstadoTarea.PENDIENTE && tarea.estado != EstadoTarea.RECHAZADA) {
-            return Operacion.Error("La tarea no esta pendiente de ejecucion")
+            return Operacion.Error("La tarea no está pendiente de ejecución")
         }
         tareaDao.actualizar(tarea.copy(estado = EstadoTarea.EN_DESARROLLO))
         return Operacion.Exito("Tarea iniciada")
@@ -135,7 +135,7 @@ class TareaRepository(
             return Operacion.Error("La tarea ya fue validada")
         }
         if (tarea.estado == EstadoTarea.PENDIENTE_VALIDACION) {
-            return Operacion.Error("La tarea ya esta esperando revision")
+            return Operacion.Error("La tarea ya está esperando revisión")
         }
         val ahora = Fechas.ahora()
         evidenciaDao.insertar(
@@ -154,7 +154,7 @@ class TareaRepository(
                 comentarioEstudiante = comentario.trim()
             )
         )
-        return Operacion.Exito("Actividad entregada. Queda pendiente de validacion")
+        return Operacion.Exito("Actividad entregada. Queda pendiente de validación")
     }
 
     /**
@@ -175,7 +175,7 @@ class TareaRepository(
             return Operacion.Error("No puedes validar una actividad de la que eres responsable")
         }
         if (tarea.estado != EstadoTarea.PENDIENTE_VALIDACION) {
-            return Operacion.Error("Solo se revisan actividades pendientes de validacion")
+            return Operacion.Error("Solo se revisan actividades pendientes de validación")
         }
         if (resultado == ResultadoValidacion.RECHAZADA && motivo.trim().length < 5) {
             return Operacion.Error("Debes indicar el motivo del rechazo")

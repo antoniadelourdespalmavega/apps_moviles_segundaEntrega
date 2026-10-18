@@ -20,6 +20,6 @@ fun Modifier.clickableSinRipple(habilitado: Boolean, alTocar: () -> Unit): Modif
 
 /** Devuelve el texto o un guion cuando esta vacio. */
 @Composable
-fun textoODefecto(valor: String?, defecto: String = "Sin informacion"): String {
+fun textoODefecto(valor: String?, defecto: String = "Sin información"): String {
     return if (valor.isNullOrBlank()) defecto else valor
 }

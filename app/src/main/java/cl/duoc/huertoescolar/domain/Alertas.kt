@@ -24,8 +24,8 @@ object Alertas {
     fun estaAtrasada(detalle: TareaDetalle, hoy: Long = Fechas.hoy()): Boolean {
         val estado = detalle.tarea.estado
         val abierta = estado == EstadoTarea.PENDIENTE ||
-            estado == EstadoTarea.EN_DESARROLLO ||
-            estado == EstadoTarea.RECHAZADA
+                estado == EstadoTarea.EN_DESARROLLO ||
+                estado == EstadoTarea.RECHAZADA
         return abierta && Fechas.inicioDelDia(detalle.tarea.fechaProgramada) < hoy
     }
 
@@ -78,13 +78,13 @@ object Alertas {
         // Riegos y mantenimientos tienen su propio aviso mas abajo.
         val proximas = tareas.filter {
             it.tarea.tipo != TipoTarea.RIEGO && it.tarea.tipo != TipoTarea.MANTENIMIENTO &&
-                (it.tarea.estado == EstadoTarea.PENDIENTE || it.tarea.estado == EstadoTarea.EN_DESARROLLO) &&
-                Fechas.diasEntre(hoy, it.tarea.fechaProgramada) in 0..3
+                    (it.tarea.estado == EstadoTarea.PENDIENTE || it.tarea.estado == EstadoTarea.EN_DESARROLLO) &&
+                    Fechas.diasEntre(hoy, it.tarea.fechaProgramada) in 0..3
         }
         if (proximas.isNotEmpty()) {
             avisos.add(
                 Alerta(
-                    titulo = "Tareas para los proximos dias: " + proximas.size,
+                    titulo = "Tareas para los próximos días: " + proximas.size,
                     detalle = proximas.take(3).joinToString(", ") {
                         it.tarea.descripcion + " (" + Fechas.formatear(it.tarea.fechaProgramada) + ")"
                     },
@@ -108,8 +108,8 @@ object Alertas {
 
         val riegosProximos = tareas.filter {
             it.tarea.tipo == TipoTarea.RIEGO &&
-                it.tarea.estado == EstadoTarea.PENDIENTE &&
-                Fechas.diasEntre(hoy, it.tarea.fechaProgramada) in 0..2
+                    it.tarea.estado == EstadoTarea.PENDIENTE &&
+                    Fechas.diasEntre(hoy, it.tarea.fechaProgramada) in 0..2
         }
         if (riegosProximos.isNotEmpty()) {
             avisos.add(
@@ -125,8 +125,8 @@ object Alertas {
 
         val mantenimientos = tareas.filter {
             it.tarea.tipo == TipoTarea.MANTENIMIENTO &&
-                it.tarea.estado != EstadoTarea.VALIDADA &&
-                Fechas.diasEntre(hoy, it.tarea.fechaProgramada) in 0..7
+                    it.tarea.estado != EstadoTarea.VALIDADA &&
+                    Fechas.diasEntre(hoy, it.tarea.fechaProgramada) in 0..7
         }
         if (mantenimientos.isNotEmpty()) {
             avisos.add(
@@ -144,7 +144,7 @@ object Alertas {
         if (porValidar.isNotEmpty()) {
             avisos.add(
                 Alerta(
-                    titulo = "Entregas esperando revision: " + porValidar.size,
+                    titulo = "Entregas esperando revisión: " + porValidar.size,
                     detalle = porValidar.joinToString(", ") { it.tarea.descripcion },
                     nivel = NivelAlerta.ADVERTENCIA
                 )
@@ -153,13 +153,13 @@ object Alertas {
 
         val cosechas = cultivos.filter {
             it.estado != EstadoCultivo.COSECHADO &&
-                it.estado != EstadoCultivo.FINALIZADO &&
-                Fechas.diasEntre(hoy, it.fechaCosechaEstimada) in 0..14
+                    it.estado != EstadoCultivo.FINALIZADO &&
+                    Fechas.diasEntre(hoy, it.fechaCosechaEstimada) in 0..14
         }
         if (cosechas.isNotEmpty()) {
             avisos.add(
                 Alerta(
-                    titulo = "Proximas cosechas: " + cosechas.size,
+                    titulo = "Próximas cosechas: " + cosechas.size,
                     detalle = cosechas.joinToString(", ") {
                         it.nombre + " (" + Fechas.formatear(it.fechaCosechaEstimada) + ")"
                     },

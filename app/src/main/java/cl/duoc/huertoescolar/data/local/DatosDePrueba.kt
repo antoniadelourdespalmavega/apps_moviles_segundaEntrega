@@ -77,7 +77,7 @@ object DatosDePrueba {
                 nombreUsuario = "est.benjamin",
                 correo = "benjamin.diaz@escuela.cl",
                 clave = CLAVE_DEMO,
-                nombre = "Benjamin Diaz",
+                nombre = "Benjamín Díaz",
                 rol = Cargo.ESTUDIANTE.rol,
                 cargo = Cargo.ESTUDIANTE,
                 taller = "Taller A"
@@ -112,7 +112,7 @@ object DatosDePrueba {
             Sector(
                 codigo = "S-02",
                 nombre = "Invernadero",
-                descripcion = "Estructura cubierta para almacigos y plantas delicadas",
+                descripcion = "Estructura cubierta para almácigos y plantas delicadas",
                 ubicacion = "Costado del gimnasio",
                 estado = EstadoSector.EN_USO,
                 responsableId = idTallerista,
@@ -124,7 +124,7 @@ object DatosDePrueba {
             Sector(
                 codigo = "S-03",
                 nombre = "Compostera",
-                descripcion = "Zona de compostaje y preparacion de tierra",
+                descripcion = "Zona de compostaje y preparación de tierra",
                 ubicacion = "Fondo del patio trasero",
                 estado = EstadoSector.EN_MANTENIMIENTO,
                 responsableId = idTallerista,
@@ -152,7 +152,7 @@ object DatosDePrueba {
         cultivoDao.insertar(
             Cultivo(
                 nombre = "Lechuga costina",
-                descripcion = "Almacigo trasplantado en la cama 1 del sector norte",
+                descripcion = "Almácigo trasplantado en la cama 1 del sector norte",
                 sectorId = idNorte,
                 fechaSiembra = Fechas.sumarDias(hoy, -35),
                 fechaTrasplante = Fechas.sumarDias(hoy, -20),
@@ -187,14 +187,14 @@ object DatosDePrueba {
                 fechaCosechaEstimada = Fechas.sumarDias(hoy, 25),
                 frecuenciaRiegoDias = 2,
                 estado = EstadoCultivo.SEMBRADO,
-                observaciones = "Germinacion despareja en el borde",
+                observaciones = "Germinación despareja en el borde",
                 rutaFoto = null
             )
         )
         cultivoDao.insertar(
             Cultivo(
                 nombre = "Cilantro",
-                descripcion = "Almacigo en bandeja dentro del invernadero",
+                descripcion = "Almácigo en bandeja dentro del invernadero",
                 sectorId = idInvernadero,
                 fechaSiembra = Fechas.sumarDias(hoy, -12),
                 fechaTrasplante = null,
@@ -222,7 +222,7 @@ object DatosDePrueba {
         cultivoDao.insertar(
             Cultivo(
                 nombre = "Albahaca",
-                descripcion = "Macetero de aromaticas junto a los tomates",
+                descripcion = "Macetero de aromáticas junto a los tomates",
                 sectorId = idInvernadero,
                 fechaSiembra = Fechas.sumarDias(hoy, -70),
                 fechaTrasplante = Fechas.sumarDias(hoy, -45),

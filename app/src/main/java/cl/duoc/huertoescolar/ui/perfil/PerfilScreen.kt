@@ -94,24 +94,24 @@ fun PerfilScreen(
                 error = estado.errores[Validaciones.CAMPO_TALLER]
             )
 
-            Text("Cambiar contrasena (opcional)", style = MaterialTheme.typography.titleMedium)
+            Text("Cambiar contraseña (opcional)", style = MaterialTheme.typography.titleMedium)
             CampoClave(
                 valor = estado.claveActual,
                 alCambiar = { viewModel.cambiarClaveActual(it) },
-                etiqueta = "Contrasena actual",
+                etiqueta = "Contraseña actual",
                 error = estado.errores[Validaciones.CAMPO_CLAVE_ACTUAL]
             )
             CampoClave(
                 valor = estado.claveNueva,
                 alCambiar = { viewModel.cambiarClaveNueva(it) },
-                etiqueta = "Nueva contrasena",
+                etiqueta = "Nueva contraseña",
                 error = estado.errores[Validaciones.CAMPO_CLAVE],
-                ayuda = "Minimo 8 caracteres, con letras y numeros, sin espacios"
+                ayuda = "Mínimo 8 caracteres, con letras y números, sin espacios"
             )
             CampoClave(
                 valor = estado.confirmar,
                 alCambiar = { viewModel.cambiarConfirmar(it) },
-                etiqueta = "Repetir nueva contrasena",
+                etiqueta = "Repetir nueva contraseña",
                 error = estado.errores[Validaciones.CAMPO_CONFIRMAR]
             )
 

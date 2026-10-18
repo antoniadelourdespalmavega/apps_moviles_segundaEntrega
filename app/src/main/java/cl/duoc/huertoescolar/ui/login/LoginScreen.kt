@@ -69,7 +69,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                     color = MaterialTheme.colorScheme.onPrimary
                 )
                 Text(
-                    text = "Gestion colaborativa del huerto: sectores, cultivos, tareas y reportes.",
+                    text = "Gestión colaborativa del huerto: sectores, cultivos, tareas y reportes.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
                     modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
@@ -101,7 +101,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                     CampoClave(
                         valor = estado.clave,
                         alCambiar = { sesionViewModel.cambiarClave(it) },
-                        etiqueta = "Contrasena",
+                        etiqueta = "Contraseña",
                         error = estado.errores[Validaciones.CAMPO_CLAVE]
                     )
 
@@ -149,7 +149,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "No tienes cuenta?",
+                            text = "¿No tienes cuenta?",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -182,7 +182,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        text = "Contrasena de las cuentas de prueba: " + DatosDePrueba.CLAVE_DEMO,
+                        text = "Contraseña de las cuentas de prueba: " + DatosDePrueba.CLAVE_DEMO,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -190,7 +190,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                     cuentas.forEach { cuenta ->
                         Text(
                             text = cuenta.nombreUsuario + " - " + cuenta.rol.etiqueta.lowercase() +
-                                " (" + cuenta.cargo.etiqueta.lowercase() + ")",
+                                    " (" + cuenta.cargo.etiqueta.lowercase() + ")",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )

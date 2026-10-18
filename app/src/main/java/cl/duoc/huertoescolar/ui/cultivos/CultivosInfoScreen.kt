@@ -55,7 +55,7 @@ fun CultivosInfoScreen(
     val estado by viewModel.ui.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = { BarraSuperior(titulo = "Informacion de cultivos", alVolver = alVolver) },
+        topBar = { BarraSuperior(titulo = "Información de cultivos", alVolver = alVolver) },
         floatingActionButton = {
             if (esAdministrador) {
                 ExtendedFloatingActionButton(
@@ -80,7 +80,7 @@ fun CultivosInfoScreen(
             item {
                 Text(
                     text = estado.totalCultivos.toString() + " cultivos en " + estado.grupos.size +
-                        " sectores. Aqui ves en que sector va cada cultivo.",
+                            " sectores. Aquí ves en que sector va cada cultivo.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -98,7 +98,7 @@ fun CultivosInfoScreen(
                 item {
                     EstadoVacio(
                         titulo = "Sin resultados",
-                        detalle = "No hay cultivos que coincidan con la busqueda.",
+                        detalle = "No hay cultivos que coincidan con la búsqueda.",
                         icono = Icons.Filled.Grass
                     )
                 }
@@ -169,7 +169,7 @@ fun CultivosInfoScreen(
                             FilaDeDato("Siembra", Fechas.formatear(cultivo.fechaSiembra))
                             cultivo.fechaTrasplante?.let { FilaDeDato("Trasplante", Fechas.formatear(it)) }
                             FilaDeDato("Cosecha estimada", Fechas.formatear(cultivo.fechaCosechaEstimada))
-                            FilaDeDato("Riego", "Cada " + cultivo.frecuenciaRiegoDias + " dias")
+                            FilaDeDato("Riego", "Cada " + cultivo.frecuenciaRiegoDias + " días")
                             if (cultivo.observaciones.isNotBlank()) {
                                 FilaDeDato("Observaciones", cultivo.observaciones)
                             }

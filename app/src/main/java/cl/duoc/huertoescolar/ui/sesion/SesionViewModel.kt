@@ -67,7 +67,7 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
                 _ui.update {
                     it.copy(
                         cargando = false,
-                        mensaje = "Usuario, correo o contrasena incorrectos"
+                        mensaje = "Usuario, correo o contraseña incorrectos"
                     )
                 }
             } else {
@@ -87,7 +87,7 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
     fun cuentaCreada(nombreUsuario: String) {
         _ui.value = SesionUiState(
             usuario = nombreUsuario,
-            informacion = "Cuenta creada. Ingresa tu contrasena para entrar"
+            informacion = "Cuenta creada. Ingresa tu contraseña para entrar"
         )
     }
 

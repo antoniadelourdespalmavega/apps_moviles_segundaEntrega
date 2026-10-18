@@ -40,15 +40,15 @@ enum class EstadoCultivo(val etiqueta: String) {
 }
 
 enum class TipoTarea(val etiqueta: String) {
-    PREPARACION_SECTOR("Preparacion del sector"),
+    PREPARACION_SECTOR("Preparación del sector"),
     SIEMBRA("Siembra"),
     TRASPLANTE("Trasplante"),
     RIEGO("Riego"),
     LIMPIEZA("Limpieza"),
     RETIRO_MALEZAS("Retiro de malezas"),
-    OBSERVACION("Observacion del cultivo"),
+    OBSERVACION("Observación del cultivo"),
     MANTENIMIENTO("Mantenimiento"),
-    REVISION_SUELO("Revision del suelo"),
+    REVISION_SUELO("Revisión del suelo"),
     REGISTRO_CRECIMIENTO("Registro del crecimiento"),
     COSECHA("Cosecha"),
     OTRA("Otra actividad autorizada")
@@ -62,7 +62,7 @@ enum class TipoTarea(val etiqueta: String) {
 enum class EstadoTarea(val etiqueta: String) {
     PENDIENTE("Pendiente"),
     EN_DESARROLLO("En desarrollo"),
-    PENDIENTE_VALIDACION("Pendiente de validacion"),
+    PENDIENTE_VALIDACION("Pendiente de validación"),
     VALIDADA("Validada"),
     RECHAZADA("Rechazada")
 }
@@ -87,7 +87,7 @@ enum class ResultadoValidacion(val etiqueta: String) {
 
 enum class TipoProblema(val etiqueta: String) {
     FALTA_DE_AGUA("Falta de agua"),
-    DANO_EN_PLANTA("Dano en la planta"),
+    DANO_EN_PLANTA("Daño en la planta"),
     PLAGA_SIMULADA("Plaga simulada"),
     DETERIORO_SECTOR("Deterioro del sector"),
     MANTENIMIENTO("Problema de mantenimiento"),
@@ -96,7 +96,7 @@ enum class TipoProblema(val etiqueta: String) {
 
 enum class EstadoReporte(val etiqueta: String) {
     INFORMADO("Informado"),
-    EN_REVISION("En revision"),
+    EN_REVISION("En revisión"),
     ATENDIDO("Atendido"),
     CERRADO("Cerrado")
 }
@@ -105,5 +105,5 @@ enum class EstadoLectura(val etiqueta: String) {
     NORMAL("Normal"),
     BAJO("Bajo"),
     ALTO("Alto"),
-    PENDIENTE_REVISION("Pendiente de revision")
+    PENDIENTE_REVISION("Pendiente de revisión")
 }

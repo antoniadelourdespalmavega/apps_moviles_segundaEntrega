@@ -107,8 +107,8 @@ fun TareasScreen(
             ) {
                 FilterChip(
                     selected = estado.filtros.categoria == null &&
-                        estado.filtros.fecha == FiltroFecha.TODAS &&
-                        estado.filtros.responsableId == null,
+                            estado.filtros.fecha == FiltroFecha.TODAS &&
+                            estado.filtros.responsableId == null,
                     onClick = { viewModel.limpiarFiltros() },
                     label = { Text("Todas (" + estado.total + ")") }
                 )
@@ -165,11 +165,11 @@ fun TareasScreen(
                 when {
                     estado.cargando -> CargandoPantalla()
                     tareas.isEmpty() -> EstadoVacio(
-                        titulo = if (estado.total == 0) "Aun no hay tareas" else "No hay tareas para este filtro",
+                        titulo = if (estado.total == 0) "Aún no hay tareas" else "No hay tareas para este filtro",
                         detalle = when {
                             estado.total > 0 -> "Cambia los filtros para ver otras tareas."
-                            estado.esAdministrador -> "Usa el boton Nueva tarea para crear y asignar la primera."
-                            else -> "Cuando el docente o tallerista te asigne una tarea, aparecera aqui."
+                            estado.esAdministrador -> "Usa el botón Nueva tarea para crear y asignar la primera."
+                            else -> "Cuando el docente o tallerista te asigne una tarea, aparecerá aquí."
                         },
                         icono = Icons.Filled.Assignment
                     )
@@ -213,7 +213,7 @@ fun TareasScreen(
                                     )
                                     Text(
                                         text = "Programada: " +
-                                            Fechas.formatear(detalle.tarea.fechaProgramada),
+                                                Fechas.formatear(detalle.tarea.fechaProgramada),
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(

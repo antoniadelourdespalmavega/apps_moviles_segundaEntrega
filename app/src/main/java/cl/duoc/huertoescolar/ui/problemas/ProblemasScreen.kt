@@ -95,9 +95,9 @@ fun ProblemasScreen(
             estado.reportes.isEmpty() -> EstadoVacio(
                 titulo = "Sin problemas reportados",
                 detalle = if (estado.esAdministrador) {
-                    "Cuando un estudiante reporte un problema, aparecera aqui para que lo soluciones."
+                    "Cuando un estudiante reporte un problema, aparecerá aquí para que lo soluciones."
                 } else {
-                    "Usa el boton Reportar problema cuando detectes algo en el huerto."
+                    "Usa el botón Reportar problema cuando detectes algo en el huerto."
                 },
                 icono = Icons.Filled.ReportProblem,
                 modifier = Modifier.padding(innerPadding)
@@ -142,11 +142,11 @@ fun ProblemasScreen(
                             )
                             Text(
                                 text = detalle.sectorNombre +
-                                    (if (detalle.cultivoNombre != null) {
-                                        " - " + detalle.cultivoNombre
-                                    } else {
-                                        ""
-                                    }),
+                                        (if (detalle.cultivoNombre != null) {
+                                            " - " + detalle.cultivoNombre
+                                        } else {
+                                            ""
+                                        }),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -162,7 +162,7 @@ fun ProblemasScreen(
                                         Fechas.formatearConHora(detalle.reporte.fechaReporte)
                                     )
                                     FilaDeDato(
-                                        "Fecha de atencion",
+                                        "Fecha de atención",
                                         Fechas.formatearOpcional(detalle.reporte.fechaCierre)
                                     )
                                     if (detalle.reporte.comentarioDocente.isNotBlank()) {
@@ -174,7 +174,7 @@ fun ProblemasScreen(
 
                                     if (estado.esAdministrador) {
                                         val pendiente = detalle.reporte.estado == EstadoReporte.INFORMADO ||
-                                            detalle.reporte.estado == EstadoReporte.EN_REVISION
+                                                detalle.reporte.estado == EstadoReporte.EN_REVISION
                                         if (pendiente) {
                                             Button(
                                                 onClick = {
@@ -204,7 +204,7 @@ fun ProblemasScreen(
                                             modifier = Modifier.padding(top = 8.dp)
                                         )
                                         SelectorDesplegable(
-                                            etiqueta = "Cambiar estado de atencion",
+                                            etiqueta = "Cambiar estado de atención",
                                             opciones = EstadoReporte.entries.toList(),
                                             seleccionada = detalle.reporte.estado,
                                             textoDe = { it.etiqueta },

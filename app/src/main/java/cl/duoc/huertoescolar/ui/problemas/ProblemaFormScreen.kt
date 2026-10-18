@@ -89,7 +89,7 @@ fun ProblemaFormScreen(
                 etiqueta = "Cultivo afectado (opcional)",
                 opciones = listOf<Cultivo?>(null) + cultivosDelSector,
                 seleccionada = cultivosDelSector.firstOrNull { it.id == estado.cultivoId },
-                textoDe = { it?.nombre ?: "Sin cultivo especifico" },
+                textoDe = { it?.nombre ?: "Sin cultivo específico" },
                 alSeleccionar = { viewModel.cambiarCultivo(it?.id) },
                 habilitado = estado.sectorId != null,
                 ayuda = when {
@@ -111,7 +111,7 @@ fun ProblemaFormScreen(
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
-                etiqueta = "Descripcion breve del problema",
+                etiqueta = "Descripción breve del problema",
                 error = estado.errores[Validaciones.CAMPO_DESCRIPCION],
                 lineaUnica = false,
                 minimoDeLineas = 3,
@@ -119,7 +119,7 @@ fun ProblemaFormScreen(
             )
 
             Text(
-                text = "Fotografia del problema (opcional)",
+                text = "Fotografía del problema (opcional)",
                 style = MaterialTheme.typography.titleMedium
             )
             SelectorDeFoto(

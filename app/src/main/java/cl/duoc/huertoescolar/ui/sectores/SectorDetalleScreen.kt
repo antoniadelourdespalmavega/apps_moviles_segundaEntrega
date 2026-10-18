@@ -74,7 +74,7 @@ fun SectorDetalleScreen(
     if (confirmarEliminar) {
         DialogoConfirmacion(
             titulo = "Eliminar sector",
-            mensaje = "Se eliminara el sector con sus cultivos. Un sector con tareas registradas no se puede eliminar.",
+            mensaje = "Se eliminará el sector con sus cultivos. Un sector con tareas registradas no se puede eliminar.",
             textoConfirmar = "Eliminar",
             alConfirmar = {
                 confirmarEliminar = false
@@ -165,7 +165,7 @@ fun SectorDetalleScreen(
                                 text = sector.descripcion,
                                 style = MaterialTheme.typography.bodyMedium
                             )
-                            FilaDeDato("Ubicacion", sector.ubicacion)
+                            FilaDeDato("Ubicación", sector.ubicacion)
                             FilaDeDato("Creado", Fechas.formatear(sector.fechaCreacion))
                             FilaDeDato("Actualizado", Fechas.formatear(sector.fechaActualizacion))
                         }
@@ -186,7 +186,7 @@ fun SectorDetalleScreen(
                             detalle = if (esAdministrador) {
                                 "Agrega el primer cultivo de este sector."
                             } else {
-                                "Todavia no hay cultivos asociados a este sector."
+                                "Todavía no hay cultivos asociados a este sector."
                             },
                             icono = Icons.Filled.Grass
                         )
@@ -243,7 +243,7 @@ fun SectorDetalleScreen(
                                         )
                                         FilaDeDato(
                                             "Frecuencia de riego",
-                                            "Cada " + cultivo.frecuenciaRiegoDias + " dias"
+                                            "Cada " + cultivo.frecuenciaRiegoDias + " días"
                                         )
                                         FilaDeDato("Observaciones", cultivo.observaciones)
 
@@ -259,7 +259,7 @@ fun SectorDetalleScreen(
                                                 modifier = Modifier.padding(top = 8.dp)
                                             )
                                             Text(
-                                                text = "Tocar aqui para editar el cultivo completo",
+                                                text = "Tocar aquí para editar el cultivo completo",
                                                 style = MaterialTheme.typography.labelMedium,
                                                 color = MaterialTheme.colorScheme.primary,
                                                 modifier = Modifier

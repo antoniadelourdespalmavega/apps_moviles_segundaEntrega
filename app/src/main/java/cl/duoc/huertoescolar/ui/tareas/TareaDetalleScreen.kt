@@ -80,7 +80,7 @@ fun TareaDetalleScreen(
     if (confirmarEliminar) {
         DialogoConfirmacion(
             titulo = "Eliminar tarea",
-            mensaje = "La tarea y sus evidencias se eliminaran. Esta accion no se puede deshacer.",
+            mensaje = "La tarea y sus evidencias se eliminarán. Esta acción no se puede deshacer.",
             textoConfirmar = "Eliminar",
             alConfirmar = {
                 confirmarEliminar = false
@@ -129,7 +129,7 @@ fun TareaDetalleScreen(
         when {
             estado.cargando -> CargandoPantalla(modifier = Modifier.padding(innerPadding))
             detalle == null -> EstadoVacio(
-                titulo = "La tarea no esta disponible",
+                titulo = "La tarea no está disponible",
                 detalle = "Puede haber sido eliminada por el administrador.",
                 modifier = Modifier.padding(innerPadding)
             )
@@ -181,7 +181,7 @@ fun TareaDetalleScreen(
                                     Fechas.formatear(detalle.tarea.fechaProgramada)
                                 )
                                 FilaDeDato(
-                                    "Fecha de realizacion",
+                                    "Fecha de realización",
                                     Fechas.formatearOpcional(detalle.tarea.fechaRealizacion)
                                 )
                             }
@@ -245,7 +245,7 @@ fun TareaDetalleScreen(
                                         enabled = !estado.procesando,
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
-                                        Text("Entregar para validacion")
+                                        Text("Entregar para validación")
                                     }
                                 }
                             }
@@ -261,7 +261,7 @@ fun TareaDetalleScreen(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        text = "Tu entrega esta esperando la revision de un " +
+                                        text = "Tu entrega está esperando la revisión de un " +
                                                 "docente o tallerista.",
                                         style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier.padding(14.dp)
@@ -275,7 +275,7 @@ fun TareaDetalleScreen(
                     if (esAdmin && detalle.tarea.estado == EstadoTarea.PENDIENTE_VALIDACION) {
                         item {
                             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                                Text("Revision de la actividad", style = MaterialTheme.typography.titleMedium)
+                                Text("Revisión de la actividad", style = MaterialTheme.typography.titleMedium)
                                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                     Button(
                                         onClick = { viewModel.validar(usuario.id) },
@@ -333,7 +333,7 @@ fun TareaDetalleScreen(
                     if (estado.evidencias.isEmpty()) {
                         item {
                             Text(
-                                text = "Todavia no se adjuntan fotografias a esta tarea.",
+                                text = "Todavía no se adjuntan fotografías a esta tarea.",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

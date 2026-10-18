@@ -88,19 +88,19 @@ fun RegistroScreen(
                 alCambiar = { viewModel.cambiarUsuario(it) },
                 etiqueta = "Nombre de usuario",
                 error = estado.errores[Validaciones.CAMPO_USUARIO],
-                ayuda = "4 a 20 caracteres: minusculas, numeros, punto o guion bajo"
+                ayuda = "4 a 20 caracteres: minúsculas, números, punto o guion bajo"
             )
             CampoClave(
                 valor = estado.clave,
                 alCambiar = { viewModel.cambiarClave(it) },
-                etiqueta = "Contrasena",
+                etiqueta = "Contraseña",
                 error = estado.errores[Validaciones.CAMPO_CLAVE],
-                ayuda = "Minimo 8 caracteres, con letras y numeros, sin espacios"
+                ayuda = "Mínimo 8 caracteres, con letras y números, sin espacios"
             )
             CampoClave(
                 valor = estado.confirmar,
                 alCambiar = { viewModel.cambiarConfirmar(it) },
-                etiqueta = "Repetir contrasena",
+                etiqueta = "Repetir contraseña",
                 error = estado.errores[Validaciones.CAMPO_CONFIRMAR]
             )
             SelectorDesplegable(
@@ -124,7 +124,7 @@ fun RegistroScreen(
                 CampoTexto(
                     valor = estado.codigoAutorizacion,
                     alCambiar = { viewModel.cambiarCodigo(it) },
-                    etiqueta = "Codigo de autorizacion",
+                    etiqueta = "Código de autorización",
                     error = estado.errores[Validaciones.CAMPO_CODIGO_AUTORIZACION],
                     ayuda = "Lo entrega la escuela a docentes y talleristas"
                 )
@@ -141,7 +141,7 @@ fun RegistroScreen(
                 Text("Ya tengo cuenta, volver a ingresar")
             }
             Text(
-                text = "Usa datos ficticios: el proyecto no guarda informacion personal real.",
+                text = "Usa datos ficticios: el proyecto no guarda información personal real.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

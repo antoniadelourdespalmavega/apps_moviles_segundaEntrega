@@ -349,7 +349,7 @@ private fun PantallaSinPermiso(alVolver: () -> Unit) {
     ) { innerPadding ->
         EstadoVacio(
             titulo = "No tienes permiso para esta pantalla",
-            detalle = "Esta funcion esta disponible solo para docentes y talleristas autorizados.",
+            detalle = "Esta función está disponible solo para docentes y talleristas autorizados.",
             icono = Icons.Filled.Lock,
             modifier = Modifier.padding(innerPadding)
         )

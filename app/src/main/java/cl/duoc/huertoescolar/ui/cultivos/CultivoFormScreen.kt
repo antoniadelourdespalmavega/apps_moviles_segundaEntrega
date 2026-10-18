@@ -59,7 +59,7 @@ fun CultivoFormScreen(
     if (confirmarEliminar) {
         DialogoConfirmacion(
             titulo = "Eliminar cultivo",
-            mensaje = "Se eliminara este cultivo. Un cultivo con tareas registradas no se puede eliminar.",
+            mensaje = "Se eliminará este cultivo. Un cultivo con tareas registradas no se puede eliminar.",
             textoConfirmar = "Eliminar",
             alConfirmar = {
                 confirmarEliminar = false
@@ -114,7 +114,7 @@ fun CultivoFormScreen(
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
-                etiqueta = "Descripcion",
+                etiqueta = "Descripción",
                 error = estado.errores[Validaciones.CAMPO_DESCRIPCION],
                 lineaUnica = false,
                 minimoDeLineas = 2
@@ -147,10 +147,10 @@ fun CultivoFormScreen(
             CampoTexto(
                 valor = estado.frecuenciaRiego,
                 alCambiar = { viewModel.cambiarRiego(it) },
-                etiqueta = "Frecuencia de riego (dias)",
+                etiqueta = "Frecuencia de riego (días)",
                 error = estado.errores[Validaciones.CAMPO_RIEGO],
                 teclado = KeyboardType.Number,
-                ayuda = "Numero mayor que cero"
+                ayuda = "Número mayor que cero"
             )
 
             SelectorDesplegable(
@@ -170,7 +170,7 @@ fun CultivoFormScreen(
             )
 
             Text(
-                text = "Fotografia referencial del cultivo",
+                text = "Fotografía referencial del cultivo",
                 style = MaterialTheme.typography.titleMedium
             )
             SelectorDeFoto(

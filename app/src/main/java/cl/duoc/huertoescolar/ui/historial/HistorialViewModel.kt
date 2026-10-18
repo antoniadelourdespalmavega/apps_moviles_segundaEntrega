@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 enum class TipoRegistro(val etiqueta: String) {
     TAREA("Tarea asignada"),
     EVIDENCIA("Actividad entregada"),
-    VALIDACION("Revision"),
+    VALIDACION("Revisión"),
     REPORTE("Problema reportado")
 }
 
@@ -38,7 +38,7 @@ data class RegistroHistorial(
 enum class PeriodoHistorial(val etiqueta: String) {
     TODO("Todo el historial"),
     HOY("Solo hoy"),
-    SEMANA("Ultimos 7 dias")
+    SEMANA("Últimos 7 días")
 }
 
 data class FiltrosHistorial(
@@ -88,7 +88,7 @@ class HistorialViewModel(
                     tipo = TipoRegistro.TAREA,
                     titulo = it.tarea.tipo.etiqueta + ": " + it.tarea.descripcion,
                     detalle = "Asignada a " + it.responsableNombre + " en " + it.sectorNombre +
-                        " para el " + Fechas.formatear(it.tarea.fechaProgramada),
+                            " para el " + Fechas.formatear(it.tarea.fechaProgramada),
                     autor = it.creadorNombre,
                     fecha = it.tarea.fechaCreacion
                 )
@@ -111,15 +111,15 @@ class HistorialViewModel(
         val registrosValidaciones = validaciones
             .filter { esAdmin || it.tareaResponsableId == idUsuario }
             .map {
-            RegistroHistorial(
-                id = "validacion-" + it.validacion.id,
-                tipo = TipoRegistro.VALIDACION,
-                titulo = it.validacion.resultado.etiqueta + ": " + it.tareaDescripcion,
-                detalle = it.validacion.motivo,
-                autor = it.validadorNombre,
-                fecha = it.validacion.fechaValidacion
-            )
-        }
+                RegistroHistorial(
+                    id = "validacion-" + it.validacion.id,
+                    tipo = TipoRegistro.VALIDACION,
+                    titulo = it.validacion.resultado.etiqueta + ": " + it.tareaDescripcion,
+                    detalle = it.validacion.motivo,
+                    autor = it.validadorNombre,
+                    fecha = it.validacion.fechaValidacion
+                )
+            }
 
         val registrosReportes = reportes
             .filter { esAdmin || it.reporte.reportadoPorId == idUsuario }

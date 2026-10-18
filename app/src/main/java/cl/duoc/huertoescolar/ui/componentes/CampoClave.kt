@@ -50,7 +50,7 @@ fun CampoClave(
                 IconButton(onClick = { visible = !visible }) {
                     Icon(
                         imageVector = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                        contentDescription = if (visible) "Ocultar contrasena" else "Mostrar contrasena"
+                        contentDescription = if (visible) "Ocultar contraseña" else "Mostrar contraseña"
                     )
                 }
             },

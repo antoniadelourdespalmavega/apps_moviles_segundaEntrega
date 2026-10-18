@@ -104,7 +104,7 @@ fun TareaFormScreen(
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
-                etiqueta = "Descripcion de la tarea",
+                etiqueta = "Descripción de la tarea",
                 error = estado.errores[Validaciones.CAMPO_DESCRIPCION]
             )
 

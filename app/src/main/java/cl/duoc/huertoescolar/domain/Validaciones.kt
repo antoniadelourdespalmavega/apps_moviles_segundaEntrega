@@ -78,7 +78,7 @@ object Validaciones {
         return when {
             limpio.isEmpty() -> "El usuario es obligatorio"
             !REGEX_USUARIO.matches(limpio) ->
-                "Usa de 4 a 20 caracteres: minusculas, numeros, punto o guion bajo"
+                "Usa de 4 a 20 caracteres: minúsculas, números, punto o guion bajo"
             else -> null
         }
     }
@@ -86,12 +86,12 @@ object Validaciones {
     /** Clave: 8 a 30 caracteres, sin espacios, con al menos una letra y un numero. */
     fun validarClave(clave: String): String? {
         return when {
-            clave.isEmpty() -> "La contrasena es obligatoria"
-            clave.length < 8 -> "La contrasena debe tener al menos 8 caracteres"
-            clave.length > 30 -> "La contrasena no puede superar los 30 caracteres"
-            clave.any { it.isWhitespace() } -> "La contrasena no puede tener espacios"
-            clave.none { it.isLetter() } -> "La contrasena debe incluir al menos una letra"
-            clave.none { it.isDigit() } -> "La contrasena debe incluir al menos un numero"
+            clave.isEmpty() -> "La contraseña es obligatoria"
+            clave.length < 8 -> "La contraseña debe tener al menos 8 caracteres"
+            clave.length > 30 -> "La contraseña no puede superar los 30 caracteres"
+            clave.any { it.isWhitespace() } -> "La contraseña no puede tener espacios"
+            clave.none { it.isLetter() } -> "La contraseña debe incluir al menos una letra"
+            clave.none { it.isDigit() } -> "La contraseña debe incluir al menos un número"
             else -> null
         }
     }
@@ -120,7 +120,7 @@ object Validaciones {
         } else if (limpio.contains("@")) {
             validarCorreo(limpio)?.let { errores[CAMPO_USUARIO] = it }
         }
-        if (clave.isEmpty()) errores[CAMPO_CLAVE] = "Ingresa tu contrasena"
+        if (clave.isEmpty()) errores[CAMPO_CLAVE] = "Ingresa tu contraseña"
         return errores
     }
 
@@ -139,13 +139,13 @@ object Validaciones {
         validarCorreo(correo)?.let { errores[CAMPO_CORREO] = it }
         validarNombreUsuario(usuario)?.let { errores[CAMPO_USUARIO] = it }
         validarClave(clave)?.let { errores[CAMPO_CLAVE] = it }
-        if (confirmar != clave) errores[CAMPO_CONFIRMAR] = "Las contrasenas no coinciden"
+        if (confirmar != clave) errores[CAMPO_CONFIRMAR] = "Las contraseñas no coinciden"
         if (cargo == null) errores[CAMPO_CARGO] = "Selecciona tu cargo"
         textoObligatorio(errores, CAMPO_TALLER, taller, "El taller", minimo = 2, maximo = 40)
         if (cargo != null && cargo.rol == Rol.ADMINISTRADOR &&
             codigoAutorizacion.trim() != CODIGO_AUTORIZACION_ADMIN
         ) {
-            errores[CAMPO_CODIGO_AUTORIZACION] = "Codigo de autorizacion incorrecto"
+            errores[CAMPO_CODIGO_AUTORIZACION] = "Código de autorización incorrecto"
         }
         return errores
     }
@@ -167,9 +167,9 @@ object Validaciones {
         validarCorreo(correo)?.let { errores[CAMPO_CORREO] = it }
         textoObligatorio(errores, CAMPO_TALLER, taller, "El taller", minimo = 2, maximo = 40)
         if (claveNueva.isNotEmpty() || claveActual.isNotEmpty()) {
-            if (claveActual.isEmpty()) errores[CAMPO_CLAVE_ACTUAL] = "Ingresa tu contrasena actual"
+            if (claveActual.isEmpty()) errores[CAMPO_CLAVE_ACTUAL] = "Ingresa tu contraseña actual"
             validarClave(claveNueva)?.let { errores[CAMPO_CLAVE] = it }
-            if (confirmar != claveNueva) errores[CAMPO_CONFIRMAR] = "Las contrasenas no coinciden"
+            if (confirmar != claveNueva) errores[CAMPO_CONFIRMAR] = "Las contraseñas no coinciden"
         }
         return errores
     }
@@ -183,13 +183,13 @@ object Validaciones {
         val errores = mutableMapOf<String, String>()
         val codigoLimpio = codigo.trim().uppercase()
         if (codigoLimpio.isEmpty()) {
-            errores[CAMPO_CODIGO] = "El codigo es obligatorio"
+            errores[CAMPO_CODIGO] = "El código es obligatorio"
         } else if (!Regex("^[A-Z0-9-]{3,10}$").matches(codigoLimpio)) {
-            errores[CAMPO_CODIGO] = "Usa entre 3 y 10 caracteres: letras, numeros o guion"
+            errores[CAMPO_CODIGO] = "Usa entre 3 y 10 caracteres: letras, números o guion"
         }
         textoObligatorio(errores, CAMPO_NOMBRE, nombre, "El nombre", minimo = 3, maximo = 60)
-        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripcion", minimo = 5, maximo = 200)
-        textoObligatorio(errores, CAMPO_UBICACION, ubicacion, "La ubicacion", minimo = 3, maximo = 80)
+        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripción", minimo = 5, maximo = 200)
+        textoObligatorio(errores, CAMPO_UBICACION, ubicacion, "La ubicación", minimo = 3, maximo = 80)
         return errores
     }
 
@@ -204,17 +204,17 @@ object Validaciones {
     ): Map<String, String> {
         val errores = mutableMapOf<String, String>()
         textoObligatorio(errores, CAMPO_NOMBRE, nombre, "El nombre del cultivo", minimo = 3, maximo = 60)
-        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripcion", minimo = 5, maximo = 200)
+        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripción", minimo = 5, maximo = 200)
         if (sectorId == null) errores[CAMPO_SECTOR] = "Selecciona el sector donde esta el cultivo"
 
         val siembra = Fechas.parsear(fechaSiembra)
         if (siembra == null) {
-            errores[CAMPO_SIEMBRA] = "Fecha de siembra invalida (dd/mm/aaaa)"
+            errores[CAMPO_SIEMBRA] = "Fecha de siembra inválida (dd/mm/aaaa)"
         }
 
         val cosecha = Fechas.parsear(fechaCosecha)
         if (cosecha == null) {
-            errores[CAMPO_COSECHA] = "Fecha de cosecha invalida (dd/mm/aaaa)"
+            errores[CAMPO_COSECHA] = "Fecha de cosecha inválida (dd/mm/aaaa)"
         } else if (siembra != null && cosecha < siembra) {
             errores[CAMPO_COSECHA] = "La cosecha estimada no puede ser anterior a la siembra"
         }
@@ -222,7 +222,7 @@ object Validaciones {
         if (fechaTrasplante.trim().isNotEmpty()) {
             val trasplante = Fechas.parsear(fechaTrasplante)
             if (trasplante == null) {
-                errores[CAMPO_TRASPLANTE] = "Fecha de trasplante invalida (dd/mm/aaaa)"
+                errores[CAMPO_TRASPLANTE] = "Fecha de trasplante inválida (dd/mm/aaaa)"
             } else if (siembra != null && trasplante < siembra) {
                 errores[CAMPO_TRASPLANTE] = "El trasplante no puede ser anterior a la siembra"
             } else if (cosecha != null && trasplante > cosecha) {
@@ -232,11 +232,11 @@ object Validaciones {
 
         val riego = frecuenciaRiego.trim().toIntOrNull()
         if (riego == null) {
-            errores[CAMPO_RIEGO] = "La frecuencia de riego debe ser un numero"
+            errores[CAMPO_RIEGO] = "La frecuencia de riego debe ser un número"
         } else if (riego <= 0) {
             errores[CAMPO_RIEGO] = "La frecuencia de riego debe ser mayor que cero"
         } else if (riego > 60) {
-            errores[CAMPO_RIEGO] = "La frecuencia de riego no puede superar los 60 dias"
+            errores[CAMPO_RIEGO] = "La frecuencia de riego no puede superar los 60 días"
         }
         return errores
     }
@@ -251,14 +251,14 @@ object Validaciones {
         esNueva: Boolean = false
     ): Map<String, String> {
         val errores = mutableMapOf<String, String>()
-        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripcion", minimo = 5, maximo = 120)
+        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripción", minimo = 5, maximo = 120)
         textoObligatorio(errores, CAMPO_INSTRUCCIONES, instrucciones, "Las instrucciones", minimo = 5, maximo = 300)
         if (tipo == null) errores[CAMPO_TIPO] = "Selecciona el tipo de tarea"
         if (sectorId == null) errores[CAMPO_SECTOR] = "Selecciona el sector"
         if (responsableId == null) errores[CAMPO_RESPONSABLE] = "Asigna un estudiante responsable"
         val fecha = Fechas.parsear(fechaProgramada)
         if (fecha == null) {
-            errores[CAMPO_FECHA_PROGRAMADA] = "Fecha programada invalida (dd/mm/aaaa)"
+            errores[CAMPO_FECHA_PROGRAMADA] = "Fecha programada inválida (dd/mm/aaaa)"
         } else if (esNueva && fecha < Fechas.hoy()) {
             errores[CAMPO_FECHA_PROGRAMADA] = "Una tarea nueva no puede programarse en el pasado"
         }
@@ -269,7 +269,7 @@ object Validaciones {
         val errores = mutableMapOf<String, String>()
         textoObligatorio(errores, CAMPO_COMENTARIO, comentario, "El comentario", minimo = 5, maximo = 300)
         if (rutaEvidencia.isNullOrBlank()) {
-            errores[CAMPO_EVIDENCIA] = "Adjunta una fotografia del trabajo realizado"
+            errores[CAMPO_EVIDENCIA] = "Adjunta una fotografía del trabajo realizado"
         }
         return errores
     }
@@ -288,7 +288,7 @@ object Validaciones {
         val errores = mutableMapOf<String, String>()
         if (sectorId == null) errores[CAMPO_SECTOR] = "Selecciona el sector afectado"
         if (tipo == null) errores[CAMPO_TIPO] = "Selecciona el tipo de problema"
-        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripcion del problema", minimo = 10, maximo = 300)
+        textoObligatorio(errores, CAMPO_DESCRIPCION, descripcion, "La descripción del problema", minimo = 10, maximo = 300)
         return errores
     }
 }

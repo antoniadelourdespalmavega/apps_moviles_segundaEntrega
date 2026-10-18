@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 enum class FiltroFecha(val etiqueta: String) {
     TODAS("Todas las fechas"),
     HOY("Programadas para hoy"),
-    SEMANA("Proximos 7 dias")
+    SEMANA("Próximos 7 días")
 }
 
 data class FiltrosTareas(
@@ -75,9 +75,9 @@ class TareasViewModel(
 
         val filtradas = visibles.filter { detalle ->
             val porCategoria = filtrosActuales.categoria == null ||
-                Alertas.categoria(detalle, hoy) == filtrosActuales.categoria
+                    Alertas.categoria(detalle, hoy) == filtrosActuales.categoria
             val porResponsable = filtrosActuales.responsableId == null ||
-                detalle.tarea.responsableId == filtrosActuales.responsableId
+                    detalle.tarea.responsableId == filtrosActuales.responsableId
             val dias = Fechas.diasEntre(hoy, detalle.tarea.fechaProgramada)
             val porFecha = when (filtrosActuales.fecha) {
                 FiltroFecha.TODAS -> true
