@@ -18,6 +18,14 @@ CHRISTIAN EDUARDO ACUNA SANDOVAL
 | Antonia Palma | Desarrollador y Líder Técnico     |
 | Andrés Vargas | Desarrollador y Líder de Producto |
 
+
+## Planificación y control de versiones
+
+- **Trello (planificación y distribución de tareas):** https://trello.com/invite/b/6ad54aa2f16ded88b5ffb604/ATTI5a9375fae546a3506fb33c17659c1e79E820D002/proyectohuertoapmoviles
+- **GitHub (código y commits):** https://github.com/antoniadelourdespalmavega/apps_moviles_segundaEntrega.git
+
+
+
 ## Como ejecutar
 
 1. Abrir la carpeta `huerto-escolar` desde Android Studio (*File > Open*).
