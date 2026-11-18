@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.componentes
 
+import cl.duoc.huertoescolar.ui.animaciones.sacudirConError
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandVertically
@@ -63,7 +64,7 @@ fun CampoTexto(
     minimoDeLineas: Int = 1,
     habilitado: Boolean = true
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().sacudirConError(error)) {
         OutlinedTextField(
             value = valor,
             onValueChange = alCambiar,
@@ -95,7 +96,7 @@ fun CampoTexto(
     }
 }
 
-/** Mensaje de error que aparece y desaparece con animacion (animacion 1). */
+/** Mensaje de error que aparece y desaparece con animacion (AnimatedVisibility, ver Animaciones.kt). */
 @Composable
 fun MensajeDeError(error: String?, modifier: Modifier = Modifier) {
     AnimatedVisibility(
@@ -128,7 +129,7 @@ fun MensajeDeError(error: String?, modifier: Modifier = Modifier) {
 
 /**
  * Etiqueta de estado. El color cambia con animacion cuando el estado cambia
- * (animacion 2).
+ * (animateColorAsState, ver Animaciones.kt).
  */
 @Composable
 fun ChipDeEstado(

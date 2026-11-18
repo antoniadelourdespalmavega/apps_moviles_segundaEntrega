@@ -16,7 +16,6 @@ import cl.duoc.huertoescolar.domain.EstadoReporte
 import cl.duoc.huertoescolar.domain.Operacion
 import cl.duoc.huertoescolar.domain.Rol
 import cl.duoc.huertoescolar.domain.TipoProblema
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +24,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorReporte
 
 data class ProblemasUiState(
     val cargando: Boolean = true,
@@ -120,17 +122,17 @@ class ProblemaFormViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun cambiarSector(valor: Long) = _ui.update {
-        it.copy(sectorId = valor, cultivoId = null, errores = it.errores - Validaciones.CAMPO_SECTOR)
+        it.copy(sectorId = valor, cultivoId = null, errores = it.errores - Campos.SECTOR)
     }
 
     fun cambiarCultivo(valor: Long?) = _ui.update { it.copy(cultivoId = valor) }
 
     fun cambiarTipo(valor: TipoProblema) = _ui.update {
-        it.copy(tipo = valor, errores = it.errores - Validaciones.CAMPO_TIPO)
+        it.copy(tipo = valor, errores = it.errores - Campos.TIPO)
     }
 
     fun cambiarDescripcion(valor: String) = _ui.update {
-        it.copy(descripcion = valor, errores = it.errores - Validaciones.CAMPO_DESCRIPCION)
+        it.copy(descripcion = valor, errores = it.errores.revalidar(Campos.DESCRIPCION, ValidadorReporte.validarDescripcion(valor)))
     }
 
     fun cambiarFoto(ruta: String?) = _ui.update { it.copy(rutaFoto = ruta) }
@@ -139,7 +141,7 @@ class ProblemaFormViewModel(
 
     fun registrar(usuarioId: Long) {
         val estado = _ui.value
-        val errores = Validaciones.reporte(
+        val errores = ValidadorReporte.validar(
             sectorId = estado.sectorId,
             tipo = estado.tipo,
             descripcion = estado.descripcion

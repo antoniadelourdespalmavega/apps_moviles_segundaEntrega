@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.historial
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -147,14 +149,14 @@ fun HistorialScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(estado.registros, key = { it.id }) { registro ->
+                    itemsIndexed(estado.registros, key = { _, elemento -> elemento.id }) { indice, registro ->
                         val color = when (registro.tipo) {
                             TipoRegistro.TAREA -> ColoresHuerto.actual.neutro
                             TipoRegistro.EVIDENCIA -> ColoresHuerto.actual.informacion
                             TipoRegistro.VALIDACION -> ColoresHuerto.actual.exito
                             TipoRegistro.REPORTE -> ColoresHuerto.actual.error
                         }
-                        Card(modifier = Modifier.fillMaxWidth()) {
+                        Card(modifier = Modifier.animateItem().aparecerEnLista(indice).fillMaxWidth()) {
                             Column(modifier = Modifier.padding(14.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),

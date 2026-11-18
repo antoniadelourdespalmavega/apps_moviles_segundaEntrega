@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.perfil
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,11 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.huertoescolar.data.local.entity.Usuario
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoClave
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.FilaDeDato
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /** Mi perfil: el usuario edita su nombre, correo, taller y contrasena. */
 @Composable
@@ -78,20 +79,20 @@ fun PerfilScreen(
                 valor = estado.nombre,
                 alCambiar = { viewModel.cambiarNombre(it) },
                 etiqueta = "Nombre y apellido",
-                error = estado.errores[Validaciones.CAMPO_NOMBRE]
+                error = estado.errores[Campos.NOMBRE]
             )
             CampoTexto(
                 valor = estado.correo,
                 alCambiar = { viewModel.cambiarCorreo(it) },
                 etiqueta = "Correo",
-                error = estado.errores[Validaciones.CAMPO_CORREO],
+                error = estado.errores[Campos.CORREO],
                 teclado = KeyboardType.Email
             )
             CampoTexto(
                 valor = estado.taller,
                 alCambiar = { viewModel.cambiarTaller(it) },
                 etiqueta = "Taller o grupo",
-                error = estado.errores[Validaciones.CAMPO_TALLER]
+                error = estado.errores[Campos.TALLER]
             )
 
             Text("Cambiar contraseña (opcional)", style = MaterialTheme.typography.titleMedium)
@@ -99,20 +100,20 @@ fun PerfilScreen(
                 valor = estado.claveActual,
                 alCambiar = { viewModel.cambiarClaveActual(it) },
                 etiqueta = "Contraseña actual",
-                error = estado.errores[Validaciones.CAMPO_CLAVE_ACTUAL]
+                error = estado.errores[Campos.CLAVE_ACTUAL]
             )
             CampoClave(
                 valor = estado.claveNueva,
                 alCambiar = { viewModel.cambiarClaveNueva(it) },
                 etiqueta = "Nueva contraseña",
-                error = estado.errores[Validaciones.CAMPO_CLAVE],
+                error = estado.errores[Campos.CLAVE],
                 ayuda = "Mínimo 8 caracteres, con letras y números, sin espacios"
             )
             CampoClave(
                 valor = estado.confirmar,
                 alCambiar = { viewModel.cambiarConfirmar(it) },
                 etiqueta = "Repetir nueva contraseña",
-                error = estado.errores[Validaciones.CAMPO_CONFIRMAR]
+                error = estado.errores[Campos.CONFIRMAR]
             )
 
             Button(
@@ -120,7 +121,8 @@ fun PerfilScreen(
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Guardar cambios")
+                // Animacion 8: el texto se transforma en rueda de carga al guardar.
+                ContenidoConCarga(cargando = estado.guardando, texto = "Guardar cambios")
             }
         }
     }

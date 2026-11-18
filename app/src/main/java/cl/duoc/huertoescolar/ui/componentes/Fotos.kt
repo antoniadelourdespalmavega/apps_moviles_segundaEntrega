@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.componentes
 
+import cl.duoc.huertoescolar.ui.animaciones.sacudirConError
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -69,7 +70,7 @@ fun VistaPreviaFoto(
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
-        // La imagen entra con un fundido y un leve acercamiento (animacion 3).
+        // La imagen entra con un fundido y un leve acercamiento (AnimatedVisibility, ver Animaciones.kt).
         AnimatedVisibility(
             visible = existe,
             enter = fadeIn() + scaleIn(initialScale = 0.92f),
@@ -147,7 +148,7 @@ fun SelectorDeFoto(
         }
     }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().sacudirConError(error)) {
         VistaPreviaFoto(ruta = rutaActual)
 
         Row(

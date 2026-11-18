@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorSector
 
 /** Listado de sectores con su resumen de cultivos y tareas. */
 data class SectoresUiState(
@@ -197,10 +200,10 @@ class SectorFormViewModel(private val repositorio: HuertoRepository) : ViewModel
         }
     }
 
-    fun cambiarCodigo(valor: String) = actualizar { it.copy(codigo = valor, errores = it.errores - cl.duoc.huertoescolar.domain.Validaciones.CAMPO_CODIGO) }
-    fun cambiarNombre(valor: String) = actualizar { it.copy(nombre = valor, errores = it.errores - cl.duoc.huertoescolar.domain.Validaciones.CAMPO_NOMBRE) }
-    fun cambiarDescripcion(valor: String) = actualizar { it.copy(descripcion = valor, errores = it.errores - cl.duoc.huertoescolar.domain.Validaciones.CAMPO_DESCRIPCION) }
-    fun cambiarUbicacion(valor: String) = actualizar { it.copy(ubicacion = valor, errores = it.errores - cl.duoc.huertoescolar.domain.Validaciones.CAMPO_UBICACION) }
+    fun cambiarCodigo(valor: String) = actualizar { it.copy(codigo = valor, errores = it.errores.revalidar(Campos.CODIGO, ValidadorSector.validarCodigo(valor))) }
+    fun cambiarNombre(valor: String) = actualizar { it.copy(nombre = valor, errores = it.errores.revalidar(Campos.NOMBRE, ValidadorSector.validarNombre(valor))) }
+    fun cambiarDescripcion(valor: String) = actualizar { it.copy(descripcion = valor, errores = it.errores.revalidar(Campos.DESCRIPCION, ValidadorSector.validarDescripcion(valor))) }
+    fun cambiarUbicacion(valor: String) = actualizar { it.copy(ubicacion = valor, errores = it.errores.revalidar(Campos.UBICACION, ValidadorSector.validarUbicacion(valor))) }
     fun cambiarEstado(valor: EstadoSector) = actualizar { it.copy(estado = valor) }
     fun cambiarResponsable(valor: Long?) = actualizar { it.copy(responsableId = valor) }
 
@@ -210,7 +213,7 @@ class SectorFormViewModel(private val repositorio: HuertoRepository) : ViewModel
 
     fun guardar() {
         val estado = _ui.value
-        val errores = cl.duoc.huertoescolar.domain.Validaciones.sector(
+        val errores = ValidadorSector.validar(
             codigo = estado.codigo,
             nombre = estado.nombre,
             descripcion = estado.descripcion,

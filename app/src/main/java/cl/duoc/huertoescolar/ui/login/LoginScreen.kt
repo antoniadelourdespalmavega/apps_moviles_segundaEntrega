@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.login
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -18,7 +19,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,12 +32,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cl.duoc.huertoescolar.data.local.DatosDePrueba
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.CampoClave
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.EncabezadoHoja
 import cl.duoc.huertoescolar.ui.componentes.MensajeDeError
 import cl.duoc.huertoescolar.ui.sesion.SesionViewModel
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /**
  * Pantalla 1: inicio de sesion. Encabezado verde con hojas y el formulario
@@ -93,7 +93,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                         valor = estado.usuario,
                         alCambiar = { sesionViewModel.cambiarUsuario(it) },
                         etiqueta = "Usuario o correo",
-                        error = estado.errores[Validaciones.CAMPO_USUARIO],
+                        error = estado.errores[Campos.USUARIO],
                         ayuda = "Ejemplo: profe.ana o ana.rojas@escuela.cl",
                         teclado = KeyboardType.Email
                     )
@@ -102,7 +102,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                         valor = estado.clave,
                         alCambiar = { sesionViewModel.cambiarClave(it) },
                         etiqueta = "Contraseña",
-                        error = estado.errores[Validaciones.CAMPO_CLAVE]
+                        error = estado.errores[Campos.CLAVE]
                     )
 
                     estado.informacion?.let {
@@ -133,15 +133,8 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {
-                        if (estado.cargando) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.height(18.dp),
-                                strokeWidth = 2.dp,
-                                color = MaterialTheme.colorScheme.onTertiary
-                            )
-                        } else {
-                            Text("INGRESAR", fontWeight = FontWeight.Bold)
-                        }
+                        // Animacion 8: "INGRESAR" se transforma en rueda de carga.
+                        ContenidoConCarga(cargando = estado.cargando, texto = "INGRESAR", negrita = true)
                     }
 
                     Column(

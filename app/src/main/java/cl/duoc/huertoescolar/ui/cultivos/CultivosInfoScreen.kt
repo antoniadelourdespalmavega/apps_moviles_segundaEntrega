@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.cultivos
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -139,9 +141,11 @@ fun CultivosInfoScreen(
                         )
                     }
                 }
-                items(grupo.cultivos, key = { "cultivo-" + it.id }) { cultivo ->
+                itemsIndexed(grupo.cultivos, key = { _, elemento -> "cultivo-" + elemento.id }) { indice, cultivo ->
                     Card(
                         modifier = Modifier
+                            .animateItem()
+                            .aparecerEnLista(indice)
                             .fillMaxWidth()
                             .animateContentSize(),
                         colors = CardDefaults.cardColors(

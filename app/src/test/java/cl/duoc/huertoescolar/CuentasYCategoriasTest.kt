@@ -8,47 +8,50 @@ import cl.duoc.huertoescolar.domain.Cargo
 import cl.duoc.huertoescolar.domain.CategoriaTarea
 import cl.duoc.huertoescolar.domain.EstadoTarea
 import cl.duoc.huertoescolar.domain.TipoTarea
-import cl.duoc.huertoescolar.domain.Validaciones
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.ReglasComunes
+import cl.duoc.huertoescolar.domain.validacion.ValidadorRegistro
+import cl.duoc.huertoescolar.domain.validacion.ValidadorPerfil
 
 /** Pruebas del registro, edicion de perfil y conteo de tareas por categoria. */
 class CuentasYCategoriasTest {
 
     @Test
     fun correoValidoNoTieneError() {
-        assertNull(Validaciones.validarCorreo("ana.rojas@escuela.cl"))
+        assertNull(ReglasComunes.correo("ana.rojas@escuela.cl"))
     }
 
     @Test
     fun correoSinArrobaOSinDominioEsInvalido() {
-        assertNotNull(Validaciones.validarCorreo("ana.rojas"))
-        assertNotNull(Validaciones.validarCorreo("ana@escuela"))
-        assertNotNull(Validaciones.validarCorreo(""))
+        assertNotNull(ReglasComunes.correo("ana.rojas"))
+        assertNotNull(ReglasComunes.correo("ana@escuela"))
+        assertNotNull(ReglasComunes.correo(""))
     }
 
     @Test
     fun nombreConNumerosOSinApellidoEsInvalido() {
-        assertNotNull(Validaciones.validarNombre("Ana123 Rojas"))
-        assertNotNull(Validaciones.validarNombre("Ana"))
-        assertNull(Validaciones.validarNombre("Ana Rojas"))
+        assertNotNull(ReglasComunes.nombrePersona("Ana123 Rojas"))
+        assertNotNull(ReglasComunes.nombrePersona("Ana"))
+        assertNull(ReglasComunes.nombrePersona("Ana Rojas"))
     }
 
     @Test
     fun claveDebeTenerLetrasNumerosYOchoCaracteres() {
-        assertNotNull(Validaciones.validarClave("abc12"))
-        assertNotNull(Validaciones.validarClave("soloLetras"))
-        assertNotNull(Validaciones.validarClave("12345678"))
-        assertNotNull(Validaciones.validarClave("con espacio1"))
-        assertNull(Validaciones.validarClave("huerto123"))
+        assertNotNull(ReglasComunes.clave("abc12"))
+        assertNotNull(ReglasComunes.clave("soloLetras"))
+        assertNotNull(ReglasComunes.clave("12345678"))
+        assertNotNull(ReglasComunes.clave("con espacio1"))
+        assertNull(ReglasComunes.clave("huerto123"))
     }
 
     @Test
     fun registroDeDocenteExigeCodigoDeAutorizacion() {
-        val errores = Validaciones.registro(
+        val errores = ValidadorRegistro.validar(
             nombre = "Pedro Soto",
             correo = "pedro@escuela.cl",
             usuario = "profe.pedro",
@@ -58,12 +61,12 @@ class CuentasYCategoriasTest {
             taller = "Taller A",
             codigoAutorizacion = "otro"
         )
-        assertTrue(errores.containsKey(Validaciones.CAMPO_CODIGO_AUTORIZACION))
+        assertTrue(errores.containsKey(Campos.CODIGO_AUTORIZACION))
     }
 
     @Test
     fun registroConClavesDistintasDevuelveError() {
-        val errores = Validaciones.registro(
+        val errores = ValidadorRegistro.validar(
             nombre = "Pedro Soto",
             correo = "pedro@escuela.cl",
             usuario = "est.pedro",
@@ -73,12 +76,12 @@ class CuentasYCategoriasTest {
             taller = "Taller A",
             codigoAutorizacion = ""
         )
-        assertEquals(setOf(Validaciones.CAMPO_CONFIRMAR), errores.keys)
+        assertEquals(setOf(Campos.CONFIRMAR), errores.keys)
     }
 
     @Test
     fun perfilSinCambioDeClaveNoPideClaveActual() {
-        val errores = Validaciones.perfil("Ana Rojas", "ana@escuela.cl", "Taller", "", "", "")
+        val errores = ValidadorPerfil.validar("Ana Rojas", "ana@escuela.cl", "Taller", "", "", "")
         assertTrue(errores.isEmpty())
     }
 

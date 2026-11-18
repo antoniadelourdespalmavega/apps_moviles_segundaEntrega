@@ -46,7 +46,7 @@ import cl.duoc.huertoescolar.ui.componentes.EstadoVacio
 import cl.duoc.huertoescolar.ui.componentes.FilaDeDato
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
 import cl.duoc.huertoescolar.ui.componentes.VistaPreviaFoto
-import cl.duoc.huertoescolar.ui.componentes.clickableSinRipple
+import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoCultivo
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoSector
 
@@ -199,7 +199,7 @@ fun SectorDetalleScreen(
                                 .fillMaxWidth()
                                 // La tarjeta crece suavemente al desplegarse.
                                 .animateContentSize()
-                                .clickableSinRipple(true) {
+                                .tocableConRebote(true) {
                                     cultivoExpandido = if (expandido) 0L else cultivo.id
                                 }
                         ) {
@@ -264,7 +264,7 @@ fun SectorDetalleScreen(
                                                 color = MaterialTheme.colorScheme.primary,
                                                 modifier = Modifier
                                                     .padding(top = 8.dp)
-                                                    .clickableSinRipple(true) {
+                                                    .tocableConRebote(true) {
                                                         alEditarCultivo(sectorId, cultivo.id)
                                                     }
                                             )

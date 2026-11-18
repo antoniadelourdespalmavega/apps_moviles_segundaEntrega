@@ -9,12 +9,16 @@ import cl.duoc.huertoescolar.Contenedor
 import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.data.repository.SesionRepository
 import cl.duoc.huertoescolar.domain.Operacion
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorRegistro
+import cl.duoc.huertoescolar.domain.validacion.ReglasComunes
+import cl.duoc.huertoescolar.domain.validacion.ValidadorPerfil
 
 data class PerfilUiState(
     val usuarioId: Long = 0,
@@ -46,33 +50,33 @@ class PerfilViewModel(private val repositorio: SesionRepository) : ViewModel() {
     }
 
     fun cambiarNombre(valor: String) = _ui.update {
-        it.copy(nombre = valor, errores = it.errores - Validaciones.CAMPO_NOMBRE)
+        it.copy(nombre = valor, errores = it.errores.revalidar(Campos.NOMBRE, ReglasComunes.nombrePersona(valor)))
     }
 
     fun cambiarCorreo(valor: String) = _ui.update {
-        it.copy(correo = valor, errores = it.errores - Validaciones.CAMPO_CORREO)
+        it.copy(correo = valor, errores = it.errores.revalidar(Campos.CORREO, ReglasComunes.correo(valor)))
     }
 
     fun cambiarTaller(valor: String) = _ui.update {
-        it.copy(taller = valor, errores = it.errores - Validaciones.CAMPO_TALLER)
+        it.copy(taller = valor, errores = it.errores.revalidar(Campos.TALLER, ValidadorRegistro.validarTaller(valor)))
     }
 
     fun cambiarClaveActual(valor: String) = _ui.update {
-        it.copy(claveActual = valor, errores = it.errores - Validaciones.CAMPO_CLAVE_ACTUAL)
+        it.copy(claveActual = valor, errores = it.errores - Campos.CLAVE_ACTUAL)
     }
 
     fun cambiarClaveNueva(valor: String) = _ui.update {
-        it.copy(claveNueva = valor, errores = it.errores - Validaciones.CAMPO_CLAVE)
+        it.copy(claveNueva = valor, errores = it.errores - Campos.CLAVE)
     }
 
     fun cambiarConfirmar(valor: String) = _ui.update {
-        it.copy(confirmar = valor, errores = it.errores - Validaciones.CAMPO_CONFIRMAR)
+        it.copy(confirmar = valor, errores = it.errores - Campos.CONFIRMAR)
     }
 
     /** Guarda los cambios y entrega el usuario actualizado para refrescar la sesion. */
     fun guardar(alActualizar: (Usuario) -> Unit) {
         val estado = _ui.value
-        val errores = Validaciones.perfil(
+        val errores = ValidadorPerfil.validar(
             nombre = estado.nombre,
             correo = estado.correo,
             taller = estado.taller,

@@ -12,7 +12,6 @@ import cl.duoc.huertoescolar.data.repository.TareaRepository
 import cl.duoc.huertoescolar.domain.EstadoTarea
 import cl.duoc.huertoescolar.domain.Operacion
 import cl.duoc.huertoescolar.domain.ResultadoValidacion
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +19,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.ValidadorRevision
 
 /** Una entrega esperando revision: la tarea y su evidencia mas reciente. */
 data class EntregaPorRevisar(
@@ -91,7 +92,7 @@ class RevisionViewModel(private val repositorio: TareaRepository) : ViewModel() 
 
     fun rechazar(tareaId: Long, validadorId: Long) {
         val motivo = formulario.value.motivo
-        val error = Validaciones.rechazo(motivo)[Validaciones.CAMPO_MOTIVO]
+        val error = ValidadorRevision.validarRechazo(motivo)[Campos.MOTIVO]
         if (error != null) {
             formulario.update { it.copy(error = error) }
             return

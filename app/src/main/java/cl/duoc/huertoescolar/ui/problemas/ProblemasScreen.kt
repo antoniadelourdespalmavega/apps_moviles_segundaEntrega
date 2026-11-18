@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.problemas
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +47,7 @@ import cl.duoc.huertoescolar.ui.componentes.EstadoVacio
 import cl.duoc.huertoescolar.ui.componentes.FilaDeDato
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
 import cl.duoc.huertoescolar.ui.componentes.VistaPreviaFoto
-import cl.duoc.huertoescolar.ui.componentes.clickableSinRipple
+import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoReporte
 
 /**
@@ -109,13 +111,15 @@ fun ProblemasScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(estado.reportes, key = { it.reporte.id }) { detalle ->
+                itemsIndexed(estado.reportes, key = { _, elemento -> elemento.reporte.id }) { indice, detalle ->
                     val abierto = expandido == detalle.reporte.id
                     Card(
                         modifier = Modifier
+                            .animateItem()
+                            .aparecerEnLista(indice)
                             .fillMaxWidth()
                             .animateContentSize()
-                            .clickableSinRipple(true) {
+                            .tocableConRebote(true) {
                                 expandido = if (abierto) 0L else detalle.reporte.id
                                 comentario = detalle.reporte.comentarioDocente
                             }

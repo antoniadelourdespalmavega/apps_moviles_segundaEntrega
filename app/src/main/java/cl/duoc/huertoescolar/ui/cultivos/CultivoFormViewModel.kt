@@ -11,7 +11,6 @@ import cl.duoc.huertoescolar.data.local.entity.Sector
 import cl.duoc.huertoescolar.data.repository.HuertoRepository
 import cl.duoc.huertoescolar.domain.EstadoCultivo
 import cl.duoc.huertoescolar.domain.Operacion
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +18,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorCultivo
 
 data class CultivoFormUiState(
     val id: Long = 0,
@@ -86,23 +88,23 @@ class CultivoFormViewModel(private val repositorio: HuertoRepository) : ViewMode
     }
 
     fun cambiarNombre(valor: String) = _ui.update {
-        it.copy(nombre = valor, errores = it.errores - Validaciones.CAMPO_NOMBRE)
+        it.copy(nombre = valor, errores = it.errores.revalidar(Campos.NOMBRE, ValidadorCultivo.validarNombre(valor)))
     }
 
     fun cambiarDescripcion(valor: String) = _ui.update {
-        it.copy(descripcion = valor, errores = it.errores - Validaciones.CAMPO_DESCRIPCION)
+        it.copy(descripcion = valor, errores = it.errores.revalidar(Campos.DESCRIPCION, ValidadorCultivo.validarDescripcion(valor)))
     }
 
     fun cambiarSector(valor: Long) = _ui.update {
-        it.copy(sectorId = valor, errores = it.errores - Validaciones.CAMPO_SECTOR)
+        it.copy(sectorId = valor, errores = it.errores - Campos.SECTOR)
     }
 
     fun cambiarCosecha(valor: String) = _ui.update {
-        it.copy(fechaCosecha = valor, errores = it.errores - Validaciones.CAMPO_COSECHA)
+        it.copy(fechaCosecha = valor, errores = it.errores - Campos.COSECHA)
     }
 
     fun cambiarRiego(valor: String) = _ui.update {
-        it.copy(frecuenciaRiego = valor, errores = it.errores - Validaciones.CAMPO_RIEGO)
+        it.copy(frecuenciaRiego = valor, errores = it.errores.revalidar(Campos.RIEGO, ValidadorCultivo.validarFrecuenciaRiego(valor)))
     }
 
     fun cambiarEstado(valor: EstadoCultivo) = _ui.update { it.copy(estado = valor) }
@@ -115,7 +117,7 @@ class CultivoFormViewModel(private val repositorio: HuertoRepository) : ViewMode
 
     fun guardar() {
         val estado = _ui.value
-        val errores = Validaciones.cultivo(
+        val errores = ValidadorCultivo.validar(
             nombre = estado.nombre,
             descripcion = estado.descripcion,
             sectorId = estado.sectorId,

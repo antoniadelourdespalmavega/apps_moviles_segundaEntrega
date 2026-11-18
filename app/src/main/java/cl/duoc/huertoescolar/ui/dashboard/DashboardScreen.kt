@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.dashboard
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
@@ -53,7 +55,9 @@ import cl.duoc.huertoescolar.ui.componentes.ChipDeEstado
 import cl.duoc.huertoescolar.ui.componentes.EncabezadoHoja
 import cl.duoc.huertoescolar.ui.componentes.EstadoVacio
 import cl.duoc.huertoescolar.ui.componentes.TarjetaAlerta
-import cl.duoc.huertoescolar.ui.componentes.clickableSinRipple
+import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
+import cl.duoc.huertoescolar.ui.animaciones.pulsoDeAtencion
+import cl.duoc.huertoescolar.ui.animaciones.NumeroAnimado
 import cl.duoc.huertoescolar.ui.theme.ColoresHuerto
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoTarea
 
@@ -146,21 +150,23 @@ fun DashboardScreen(
                     // por eso el numero coincide con lo que se ve alli.
                     TarjetaResumen(
                         titulo = "Pendientes",
-                        valor = (estado.conteo[CategoriaTarea.PENDIENTE] ?: 0).toString(),
+                        valor = (estado.conteo[CategoriaTarea.PENDIENTE] ?: 0),
                         color = ColoresHuerto.actual.informacion,
                         modifier = Modifier.weight(1f),
                         alTocar = { alIrATareas(CategoriaTarea.PENDIENTE) }
                     )
                     TarjetaResumen(
                         titulo = "Atrasadas",
-                        valor = (estado.conteo[CategoriaTarea.ATRASADA] ?: 0).toString(),
+                        valor = (estado.conteo[CategoriaTarea.ATRASADA] ?: 0),
+                        destacar = (estado.conteo[CategoriaTarea.ATRASADA] ?: 0) > 0,
                         color = ColoresHuerto.actual.error,
                         modifier = Modifier.weight(1f),
                         alTocar = { alIrATareas(CategoriaTarea.ATRASADA) }
                     )
                     TarjetaResumen(
                         titulo = if (esAdmin) "Por validar" else "En revisión",
-                        valor = (estado.conteo[CategoriaTarea.POR_VALIDAR] ?: 0).toString(),
+                        valor = (estado.conteo[CategoriaTarea.POR_VALIDAR] ?: 0),
+                        destacar = (estado.conteo[CategoriaTarea.POR_VALIDAR] ?: 0) > 0,
                         color = ColoresHuerto.actual.advertencia,
                         modifier = Modifier.weight(1f),
                         // El administrador va a la pantalla de revision; el
@@ -179,14 +185,14 @@ fun DashboardScreen(
                 ) {
                     TarjetaResumen(
                         titulo = "Validadas",
-                        valor = (estado.conteo[CategoriaTarea.VALIDADA] ?: 0).toString(),
+                        valor = (estado.conteo[CategoriaTarea.VALIDADA] ?: 0),
                         color = ColoresHuerto.actual.exito,
                         modifier = Modifier.weight(1f),
                         alTocar = { alIrATareas(CategoriaTarea.VALIDADA) }
                     )
                     TarjetaResumen(
                         titulo = "Rechazadas",
-                        valor = (estado.conteo[CategoriaTarea.RECHAZADA] ?: 0).toString(),
+                        valor = (estado.conteo[CategoriaTarea.RECHAZADA] ?: 0),
                         color = ColoresHuerto.actual.error,
                         modifier = Modifier.weight(1f),
                         alTocar = { alIrATareas(CategoriaTarea.RECHAZADA) }
@@ -201,21 +207,21 @@ fun DashboardScreen(
                 ) {
                     TarjetaResumen(
                         titulo = "Cultivos",
-                        valor = estado.totalCultivos.toString(),
+                        valor = estado.totalCultivos,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f),
                         alTocar = alIrACultivos
                     )
                     TarjetaResumen(
                         titulo = "Problemas",
-                        valor = estado.problemasAbiertos.toString(),
+                        valor = estado.problemasAbiertos,
                         color = ColoresHuerto.actual.error,
                         modifier = Modifier.weight(1f),
                         alTocar = alIrAProblemas
                     )
                     TarjetaResumen(
                         titulo = "Sectores",
-                        valor = estado.totalSectores.toString(),
+                        valor = estado.totalSectores,
                         color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.weight(1f),
                         alTocar = alIrASectores
@@ -313,13 +319,15 @@ fun DashboardScreen(
                     )
                 }
             } else {
-                items(estado.tareasDelUsuario, key = { it.tarea.id }) { detalle ->
+                itemsIndexed(estado.tareasDelUsuario, key = { _, elemento -> elemento.tarea.id }) { indice, detalle ->
                     val atrasada = Alertas.estaAtrasada(detalle)
                     Card(
                         modifier = Modifier
+                            .animateItem()
+                            .aparecerEnLista(indice)
                             .fillMaxWidth()
                             .animateContentSize()
-                            .clickableSinRipple(true) { alAbrirTarea(detalle.tarea.id) }
+                            .tocableConRebote(true) { alAbrirTarea(detalle.tarea.id) }
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Row(
@@ -361,13 +369,18 @@ fun DashboardScreen(
 @Composable
 private fun TarjetaResumen(
     titulo: String,
-    valor: String,
+    valor: Int,
     color: Color,
     modifier: Modifier = Modifier,
+    destacar: Boolean = false,
     alTocar: (() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier.clickableSinRipple(alTocar != null) { alTocar?.invoke() },
+        // Animacion 7 (pulso) solo si hay algo pendiente de atender, y
+        // animacion 4 (rebote) al tocar la tarjeta.
+        modifier = modifier
+            .pulsoDeAtencion(destacar)
+            .tocableConRebote(alTocar != null) { alTocar?.invoke() },
         colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.12f))
     ) {
         Column(
@@ -376,7 +389,8 @@ private fun TarjetaResumen(
                 .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = valor, style = MaterialTheme.typography.headlineMedium, color = color)
+            // Animacion 6: el numero cuenta desde 0 hasta su valor.
+            NumeroAnimado(valor = valor, estilo = MaterialTheme.typography.headlineMedium, color = color)
             Text(
                 text = titulo,
                 style = MaterialTheme.typography.labelMedium,
@@ -399,7 +413,7 @@ private fun BotonAcceso(
     val fondo = if (destacado) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondaryContainer
     val contenido = if (destacado) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSecondaryContainer
     Card(
-        modifier = modifier.clickableSinRipple(true, alTocar),
+        modifier = modifier.tocableConRebote(true, alTocar),
         colors = CardDefaults.cardColors(containerColor = fondo)
     ) {
         Column(

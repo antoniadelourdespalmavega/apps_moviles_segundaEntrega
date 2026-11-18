@@ -9,7 +9,6 @@ import cl.duoc.huertoescolar.Contenedor
 import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.data.repository.SesionRepository
 import cl.duoc.huertoescolar.domain.Rol
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -17,6 +16,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorLogin
 
 /** Estado de la pantalla de inicio de sesion y de la sesion activa. */
 data class SesionUiState(
@@ -46,16 +48,16 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
     val ui: StateFlow<SesionUiState> = _ui.asStateFlow()
 
     fun cambiarUsuario(valor: String) {
-        _ui.update { it.copy(usuario = valor, errores = it.errores - Validaciones.CAMPO_USUARIO) }
+        _ui.update { it.copy(usuario = valor, errores = it.errores.revalidar(Campos.USUARIO, ValidadorLogin.validarUsuario(valor))) }
     }
 
     fun cambiarClave(valor: String) {
-        _ui.update { it.copy(clave = valor, errores = it.errores - Validaciones.CAMPO_CLAVE) }
+        _ui.update { it.copy(clave = valor, errores = it.errores.revalidar(Campos.CLAVE, ValidadorLogin.validarClave(valor))) }
     }
 
     fun iniciarSesion() {
         val estado = _ui.value
-        val errores = Validaciones.login(estado.usuario, estado.clave)
+        val errores = ValidadorLogin.validar(estado.usuario, estado.clave)
         if (errores.isNotEmpty()) {
             _ui.update { it.copy(errores = errores) }
             return

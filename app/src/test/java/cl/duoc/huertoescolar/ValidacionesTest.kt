@@ -3,10 +3,16 @@ package cl.duoc.huertoescolar
 import cl.duoc.huertoescolar.core.Fechas
 import cl.duoc.huertoescolar.domain.TipoProblema
 import cl.duoc.huertoescolar.domain.TipoTarea
-import cl.duoc.huertoescolar.domain.Validaciones
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.ValidadorSector
+import cl.duoc.huertoescolar.domain.validacion.ValidadorCultivo
+import cl.duoc.huertoescolar.domain.validacion.ValidadorTarea
+import cl.duoc.huertoescolar.domain.validacion.ValidadorEntrega
+import cl.duoc.huertoescolar.domain.validacion.ValidadorRevision
+import cl.duoc.huertoescolar.domain.validacion.ValidadorReporte
 
 /**
  * Pruebas unitarias de las reglas de validacion.
@@ -16,7 +22,7 @@ class ValidacionesTest {
 
     @Test
     fun sectorConDatosCorrectosNoTieneErrores() {
-        val errores = Validaciones.sector(
+        val errores = ValidadorSector.validar(
             codigo = "S-01",
             nombre = "Huerto Norte",
             descripcion = "Cuatro camas de cultivo",
@@ -27,18 +33,18 @@ class ValidacionesTest {
 
     @Test
     fun sectorSinNombreDevuelveError() {
-        val errores = Validaciones.sector(
+        val errores = ValidadorSector.validar(
             codigo = "S-01",
             nombre = "",
             descripcion = "Cuatro camas de cultivo",
             ubicacion = "Patio norte"
         )
-        assertTrue(errores.containsKey(Validaciones.CAMPO_NOMBRE))
+        assertTrue(errores.containsKey(Campos.NOMBRE))
     }
 
     @Test
     fun cosechaAnteriorALaSiembraDevuelveError() {
-        val errores = Validaciones.cultivo(
+        val errores = ValidadorCultivo.validar(
             nombre = "Lechuga",
             descripcion = "Cultivo de prueba",
             sectorId = 1L,
@@ -49,13 +55,13 @@ class ValidacionesTest {
         )
         assertEquals(
             "La cosecha estimada no puede ser anterior a la siembra",
-            errores[Validaciones.CAMPO_COSECHA]
+            errores[Campos.COSECHA]
         )
     }
 
     @Test
     fun frecuenciaDeRiegoDebeSerPositiva() {
-        val errores = Validaciones.cultivo(
+        val errores = ValidadorCultivo.validar(
             nombre = "Lechuga",
             descripcion = "Cultivo de prueba",
             sectorId = 1L,
@@ -64,12 +70,12 @@ class ValidacionesTest {
             fechaCosecha = "20/05/2026",
             frecuenciaRiego = "0"
         )
-        assertTrue(errores.containsKey(Validaciones.CAMPO_RIEGO))
+        assertTrue(errores.containsKey(Campos.RIEGO))
     }
 
     @Test
     fun tareaSinResponsableDevuelveError() {
-        val errores = Validaciones.tarea(
+        val errores = ValidadorTarea.validar(
             descripcion = "Regar la cama 1",
             instrucciones = "Usar la regadera mediana",
             tipo = TipoTarea.RIEGO,
@@ -77,32 +83,32 @@ class ValidacionesTest {
             responsableId = null,
             fechaProgramada = "20/05/2026"
         )
-        assertTrue(errores.containsKey(Validaciones.CAMPO_RESPONSABLE))
+        assertTrue(errores.containsKey(Campos.RESPONSABLE))
     }
 
     @Test
     fun entregaSinFotografiaDevuelveError() {
-        val errores = Validaciones.entregaDeTarea(
+        val errores = ValidadorEntrega.validar(
             comentario = "Termine la actividad",
             rutaEvidencia = null
         )
-        assertTrue(errores.containsKey(Validaciones.CAMPO_EVIDENCIA))
+        assertTrue(errores.containsKey(Campos.EVIDENCIA))
     }
 
     @Test
     fun rechazoSinMotivoDevuelveError() {
-        val errores = Validaciones.rechazo(motivo = "")
-        assertTrue(errores.containsKey(Validaciones.CAMPO_MOTIVO))
+        val errores = ValidadorRevision.validarRechazo(motivo = "")
+        assertTrue(errores.containsKey(Campos.MOTIVO))
     }
 
     @Test
     fun reporteSinSectorDevuelveError() {
-        val errores = Validaciones.reporte(
+        val errores = ValidadorReporte.validar(
             sectorId = null,
             tipo = TipoProblema.FALTA_DE_AGUA,
             descripcion = "La bandeja de almacigos se seco"
         )
-        assertTrue(errores.containsKey(Validaciones.CAMPO_SECTOR))
+        assertTrue(errores.containsKey(Campos.SECTOR))
     }
 
     @Test

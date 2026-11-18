@@ -126,13 +126,15 @@ app/src/main/java/cl/duoc/huertoescolar/
 ├── HuertoApp.kt            Application + contenedor de repositorios
 ├── MainActivity.kt         Punto de entrada de Compose
 ├── core/                   Utilidades (fechas, manejo de imagenes)
-├── domain/                 Enums, validaciones y calculo de alertas (sin Android)
+├── domain/                 Enums y calculo de alertas (sin Android)
+│   └── validacion/         Un validador por formulario + reglas comunes
 ├── data/
 │   ├── local/              Room: entidades, DAOs, converters, datos de prueba
 │   └── repository/         Reglas de negocio y acceso a datos
 └── ui/
     ├── theme/              Colores, tipografia y colores semanticos de estado
     ├── componentes/        Campos, chips, selectores, fotos, estados vacios
+    ├── animaciones/        Todas las animaciones de la app (Animaciones.kt)
     ├── navegacion/         NavHost y rutas con control de acceso
     └── <funcionalidad>/    Pantalla + ViewModel de cada modulo
 ```
@@ -153,14 +155,75 @@ app/src/main/java/cl/duoc/huertoescolar/
 Todas las tablas usan clave primaria propia y claves foraneas; ningun dato descriptivo se
 repite entre tablas (referencia 3FN).
 
+## Validaciones (logica centralizada y desacoplada de la interfaz)
+
+Las validaciones estan en el paquete `domain/validacion/`, separadas por
+formulario. Son objetos de Kotlin puro: no conocen Compose ni Android, por eso
+se prueban con JUnit.
+
+| Archivo | Responsabilidad | Lo usa |
+|---|---|---|
+| `Campos.kt` | Nombres de los campos (claves del mapa de errores) | Validadores y pantallas |
+| `ErroresFormulario.kt` | Tipo del resultado, `errores { }` y `revalidar` (validacion en vivo) | Todos los validadores y ViewModels |
+| `ReglasComunes.kt` | Reglas reutilizables: texto obligatorio, correo, clave, nombre, fecha | Varios validadores |
+| `ValidadorLogin.kt` | Inicio de sesion | `SesionViewModel` |
+| `ValidadorRegistro.kt` | Crear cuenta y codigo de autorizacion | `RegistroViewModel` |
+| `ValidadorPerfil.kt` | Editar perfil y cambiar contrasena | `PerfilViewModel` |
+| `ValidadorSector.kt` | Formulario de sector | `SectoresViewModel` |
+| `ValidadorCultivo.kt` | Formulario de cultivo (fechas y riego) | `CultivoFormViewModel` |
+| `ValidadorTarea.kt` | Crear o editar tarea | `TareaFormViewModel` |
+| `ValidadorEntrega.kt` | Entrega del estudiante (comentario y foto) | `TareaDetalleViewModel` |
+| `ValidadorRevision.kt` | Motivo de rechazo | `TareaDetalleViewModel`, `RevisionViewModel` |
+| `ValidadorReporte.kt` | Reporte de problema | `ProblemasViewModel` |
+
+**Flujo:** la pantalla solo avisa cambios al ViewModel (`cambiarNombre(...)`).
+El ViewModel llama al validador, guarda el mapa de errores en su `StateFlow` y la
+pantalla se redibuja sola mostrando el error bajo cada campo:
+
+```
+Pantalla (Composable) -> ViewModel -> Validador (domain/validacion) -> errores en StateFlow -> Pantalla
+```
+
+**Validacion en vivo:** despues del primer intento de guardar, cada campo con
+error se vuelve a validar con cada tecla (`revalidar`). El mensaje cambia si
+sigue mal y desaparece apenas el valor queda correcto.
+
+Ademas, los repositorios (`data/repository/`) repiten las reglas de negocio y
+de permisos (por ejemplo, que solo un docente valide tareas), para que se
+cumplan aunque se intente saltar la interfaz.
+
+## Animaciones
+
+Todas las animaciones propias estan en
+`ui/animaciones/Animaciones.kt`, numeradas y comentadas:
+
+| # | Animacion | Donde se ve | Que retroalimentacion da |
+|---|---|---|---|
+| 1 | `entradaPantalla` / `salidaPantalla` / `entradaAlVolver` / `salidaAlVolver` | Al navegar entre cualquier pantalla (`NavegacionHuerto`) | Indica si el usuario avanza o vuelve |
+| 2 | `cambioDeSesion` | Login, registro y panel al iniciar o cerrar sesion | Transicion suave en vez de un salto |
+| 3 | `sacudirConError` | Todos los campos de formulario cuando aparece un error | Señala el campo exacto que hay que corregir |
+| 4 | `tocableConRebote` | Tarjetas del panel, sectores, tareas y problemas | Confirma que el toque se recibio |
+| 5 | `aparecerEnLista` + `animateItem()` | Listados de tareas, sectores, cultivos, problemas, historial, sensores y revision | La lista se arma en cascada; las tarjetas que se agregan o quitan se animan |
+| 6 | `NumeroAnimado` | Numeros del panel principal | Los contadores suben hasta su valor y se nota cuando cambian |
+| 7 | `pulsoDeAtencion` | Tarjetas *Atrasadas* y *Por validar* del panel, si son mayores que 0 | Llama la atencion sobre lo pendiente |
+| 8 | `ContenidoConCarga` | Boton *Ingresar* y botones de guardar de todos los formularios | Muestra que la accion se esta procesando |
+
+Tambien se usan animaciones estandar de Compose: `AnimatedVisibility` (mensajes
+de error, avisos, foto seleccionada, codigo de autorizacion, formulario de
+rechazo), `animateColorAsState` (color del chip de estado),
+`animateContentSize` (tarjetas que se expanden) y `Crossfade` (listado de
+tareas al cambiar de filtro).
+
 ## Pruebas unitarias
 
 ```
 ./gradlew test
 ```
 
-Cubren las reglas de validacion (fechas coherentes, frecuencia de riego positiva, campos
-obligatorios, motivo de rechazo) y el calculo de tareas atrasadas.
+Cubren cada validador por formulario (fechas coherentes, frecuencia de riego positiva,
+campos obligatorios, motivo de rechazo, login, registro y perfil), la validacion en vivo
+(`revalidar`) y el calculo de tareas atrasadas. Archivos: `ValidacionesTest`,
+`ValidadoresPorFormularioTest`, `CuentasYCategoriasTest` y `AlertasTest`.
 
 ## Limites del MVP
 

@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.tareas
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.horizontalScroll
@@ -43,7 +45,7 @@ import cl.duoc.huertoescolar.ui.componentes.CargandoPantalla
 import cl.duoc.huertoescolar.ui.componentes.ChipDeEstado
 import cl.duoc.huertoescolar.ui.componentes.EstadoVacio
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
-import cl.duoc.huertoescolar.ui.componentes.clickableSinRipple
+import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoTarea
 
 /**
@@ -178,13 +180,15 @@ fun TareasScreen(
                         contentPadding = PaddingValues(12.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        items(tareas, key = { it.tarea.id }) { detalle ->
+                        itemsIndexed(tareas, key = { _, elemento -> elemento.tarea.id }) { indice, detalle ->
                             val atrasada = Alertas.estaAtrasada(detalle)
                             Card(
                                 modifier = Modifier
+                                    .animateItem()
+                                    .aparecerEnLista(indice)
                                     .fillMaxWidth()
                                     .animateContentSize()
-                                    .clickableSinRipple(true) { alAbrirTarea(detalle.tarea.id) }
+                                    .tocableConRebote(true) { alAbrirTarea(detalle.tarea.id) }
                             ) {
                                 Column(modifier = Modifier.padding(14.dp)) {
                                     Row(

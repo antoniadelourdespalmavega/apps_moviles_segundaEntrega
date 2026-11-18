@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.login
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,15 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.huertoescolar.domain.Cargo
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoClave
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /**
  * Registro de una cuenta nueva. Todas las reglas (nombre, correo, usuario,
- * contrasena y codigo de autorizacion) estan en Validaciones.registro.
+ * contrasena y codigo de autorizacion) estan en ValidadorRegistro (domain/validacion).
  */
 @Composable
 fun RegistroScreen(
@@ -72,14 +73,14 @@ fun RegistroScreen(
                 valor = estado.nombre,
                 alCambiar = { viewModel.cambiarNombre(it) },
                 etiqueta = "Nombre y apellido",
-                error = estado.errores[Validaciones.CAMPO_NOMBRE],
+                error = estado.errores[Campos.NOMBRE],
                 ayuda = "Solo letras y espacios. Ejemplo: Ana Rojas"
             )
             CampoTexto(
                 valor = estado.correo,
                 alCambiar = { viewModel.cambiarCorreo(it) },
                 etiqueta = "Correo",
-                error = estado.errores[Validaciones.CAMPO_CORREO],
+                error = estado.errores[Campos.CORREO],
                 ayuda = "Ejemplo: nombre@escuela.cl",
                 teclado = KeyboardType.Email
             )
@@ -87,21 +88,21 @@ fun RegistroScreen(
                 valor = estado.usuario,
                 alCambiar = { viewModel.cambiarUsuario(it) },
                 etiqueta = "Nombre de usuario",
-                error = estado.errores[Validaciones.CAMPO_USUARIO],
+                error = estado.errores[Campos.USUARIO],
                 ayuda = "4 a 20 caracteres: minúsculas, números, punto o guion bajo"
             )
             CampoClave(
                 valor = estado.clave,
                 alCambiar = { viewModel.cambiarClave(it) },
                 etiqueta = "Contraseña",
-                error = estado.errores[Validaciones.CAMPO_CLAVE],
+                error = estado.errores[Campos.CLAVE],
                 ayuda = "Mínimo 8 caracteres, con letras y números, sin espacios"
             )
             CampoClave(
                 valor = estado.confirmar,
                 alCambiar = { viewModel.cambiarConfirmar(it) },
                 etiqueta = "Repetir contraseña",
-                error = estado.errores[Validaciones.CAMPO_CONFIRMAR]
+                error = estado.errores[Campos.CONFIRMAR]
             )
             SelectorDesplegable(
                 etiqueta = "Cargo",
@@ -109,13 +110,13 @@ fun RegistroScreen(
                 seleccionada = estado.cargo,
                 textoDe = { it.etiqueta },
                 alSeleccionar = { viewModel.cambiarCargo(it) },
-                error = estado.errores[Validaciones.CAMPO_CARGO]
+                error = estado.errores[Campos.CARGO]
             )
             CampoTexto(
                 valor = estado.taller,
                 alCambiar = { viewModel.cambiarTaller(it) },
                 etiqueta = "Taller o grupo",
-                error = estado.errores[Validaciones.CAMPO_TALLER],
+                error = estado.errores[Campos.TALLER],
                 ayuda = "Ejemplo: Taller A"
             )
 
@@ -125,7 +126,7 @@ fun RegistroScreen(
                     valor = estado.codigoAutorizacion,
                     alCambiar = { viewModel.cambiarCodigo(it) },
                     etiqueta = "Código de autorización",
-                    error = estado.errores[Validaciones.CAMPO_CODIGO_AUTORIZACION],
+                    error = estado.errores[Campos.CODIGO_AUTORIZACION],
                     ayuda = "Lo entrega la escuela a docentes y talleristas"
                 )
             }
@@ -135,7 +136,8 @@ fun RegistroScreen(
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Crear cuenta")
+                // Animacion 8: el texto se transforma en rueda de carga al guardar.
+                ContenidoConCarga(cargando = estado.guardando, texto = "Crear cuenta")
             }
             TextButton(onClick = alVolver, modifier = Modifier.fillMaxWidth()) {
                 Text("Ya tengo cuenta, volver a ingresar")

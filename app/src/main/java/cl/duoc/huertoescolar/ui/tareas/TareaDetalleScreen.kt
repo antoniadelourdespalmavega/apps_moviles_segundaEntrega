@@ -46,7 +46,6 @@ import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.domain.Alertas
 import cl.duoc.huertoescolar.domain.EstadoTarea
 import cl.duoc.huertoescolar.domain.Rol
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.CargandoPantalla
@@ -57,6 +56,7 @@ import cl.duoc.huertoescolar.ui.componentes.SelectorDeFoto
 import cl.duoc.huertoescolar.ui.componentes.VistaPreviaFoto
 import cl.duoc.huertoescolar.ui.theme.ColoresHuerto
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoTarea
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /**
  * Pantalla 9: detalle de la tarea.
@@ -229,14 +229,14 @@ fun TareaDetalleScreen(
                                         valor = estado.comentario,
                                         alCambiar = { viewModel.cambiarComentario(it) },
                                         etiqueta = "Comentario del trabajo realizado",
-                                        error = estado.errores[Validaciones.CAMPO_COMENTARIO],
+                                        error = estado.errores[Campos.COMENTARIO],
                                         lineaUnica = false,
                                         minimoDeLineas = 2
                                     )
                                     SelectorDeFoto(
                                         rutaActual = estado.rutaEvidencia,
                                         alSeleccionar = { viewModel.cambiarEvidencia(it) },
-                                        error = estado.errores[Validaciones.CAMPO_EVIDENCIA],
+                                        error = estado.errores[Campos.EVIDENCIA],
                                         alAvisar = { viewModel.avisar(it) },
                                         alQuitar = { viewModel.cambiarEvidencia(null) }
                                     )
@@ -305,7 +305,7 @@ fun TareaDetalleScreen(
                                             valor = estado.motivoRechazo,
                                             alCambiar = { viewModel.cambiarMotivo(it) },
                                             etiqueta = "Motivo del rechazo (obligatorio)",
-                                            error = estado.errores[Validaciones.CAMPO_MOTIVO],
+                                            error = estado.errores[Campos.MOTIVO],
                                             lineaUnica = false,
                                             minimoDeLineas = 2
                                         )

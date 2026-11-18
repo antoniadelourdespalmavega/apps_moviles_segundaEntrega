@@ -12,7 +12,6 @@ import cl.duoc.huertoescolar.data.local.query.ValidacionDetalle
 import cl.duoc.huertoescolar.data.repository.TareaRepository
 import cl.duoc.huertoescolar.domain.Operacion
 import cl.duoc.huertoescolar.domain.ResultadoValidacion
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,6 +21,10 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorEntrega
+import cl.duoc.huertoescolar.domain.validacion.ValidadorRevision
 
 data class TareaDetalleUiState(
     val cargando: Boolean = true,
@@ -93,21 +96,21 @@ class TareaDetalleViewModel(private val repositorio: TareaRepository) : ViewMode
     fun cambiarComentario(valor: String) {
         formulario.value = formulario.value.copy(
             comentario = valor,
-            errores = formulario.value.errores - Validaciones.CAMPO_COMENTARIO
+            errores = formulario.value.errores.revalidar(Campos.COMENTARIO, ValidadorEntrega.validarComentario(valor))
         )
     }
 
     fun cambiarEvidencia(ruta: String?) {
         formulario.value = formulario.value.copy(
             rutaEvidencia = ruta,
-            errores = formulario.value.errores - Validaciones.CAMPO_EVIDENCIA
+            errores = formulario.value.errores - Campos.EVIDENCIA
         )
     }
 
     fun cambiarMotivo(valor: String) {
         formulario.value = formulario.value.copy(
             motivoRechazo = valor,
-            errores = formulario.value.errores - Validaciones.CAMPO_MOTIVO
+            errores = formulario.value.errores.revalidar(Campos.MOTIVO, ValidadorRevision.validarMotivo(valor))
         )
     }
 
@@ -123,7 +126,7 @@ class TareaDetalleViewModel(private val repositorio: TareaRepository) : ViewMode
 
     fun entregar(usuarioId: Long) {
         val form = formulario.value
-        val errores = Validaciones.entregaDeTarea(form.comentario, form.rutaEvidencia)
+        val errores = ValidadorEntrega.validar(form.comentario, form.rutaEvidencia)
         if (errores.isNotEmpty()) {
             formulario.value = form.copy(
                 errores = errores,
@@ -159,7 +162,7 @@ class TareaDetalleViewModel(private val repositorio: TareaRepository) : ViewMode
 
     fun rechazar(validadorId: Long) {
         val form = formulario.value
-        val errores = Validaciones.rechazo(form.motivoRechazo)
+        val errores = ValidadorRevision.validarRechazo(form.motivoRechazo)
         if (errores.isNotEmpty()) {
             formulario.value = form.copy(
                 errores = errores,

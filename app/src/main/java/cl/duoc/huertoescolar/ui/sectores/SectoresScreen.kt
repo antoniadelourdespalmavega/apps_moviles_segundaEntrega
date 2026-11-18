@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.sectores
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +36,7 @@ import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CargandoPantalla
 import cl.duoc.huertoescolar.ui.componentes.ChipDeEstado
 import cl.duoc.huertoescolar.ui.componentes.EstadoVacio
-import cl.duoc.huertoescolar.ui.componentes.clickableSinRipple
+import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoSector
 
 /**
@@ -92,12 +94,14 @@ fun SectoresScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(estado.sectores, key = { it.sector.id }) { resumen ->
+                itemsIndexed(estado.sectores, key = { _, elemento -> elemento.sector.id }) { indice, resumen ->
                     Card(
                         modifier = Modifier
+                            .animateItem()
+                            .aparecerEnLista(indice)
                             .fillMaxWidth()
                             .animateContentSize()
-                            .clickableSinRipple(true) { alAbrirSector(resumen.sector.id) }
+                            .tocableConRebote(true) { alAbrirSector(resumen.sector.id) }
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Row(

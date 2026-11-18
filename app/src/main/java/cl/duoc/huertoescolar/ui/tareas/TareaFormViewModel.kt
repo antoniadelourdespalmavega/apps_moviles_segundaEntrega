@@ -15,7 +15,6 @@ import cl.duoc.huertoescolar.data.repository.SesionRepository
 import cl.duoc.huertoescolar.data.repository.TareaRepository
 import cl.duoc.huertoescolar.domain.Operacion
 import cl.duoc.huertoescolar.domain.TipoTarea
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +22,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ValidadorTarea
 
 data class TareaFormUiState(
     val id: Long = 0,
@@ -77,15 +79,15 @@ class TareaFormViewModel(
     }
 
     fun cambiarTipo(valor: TipoTarea) = _ui.update {
-        it.copy(tipo = valor, errores = it.errores - Validaciones.CAMPO_TIPO)
+        it.copy(tipo = valor, errores = it.errores - Campos.TIPO)
     }
 
     fun cambiarDescripcion(valor: String) = _ui.update {
-        it.copy(descripcion = valor, errores = it.errores - Validaciones.CAMPO_DESCRIPCION)
+        it.copy(descripcion = valor, errores = it.errores.revalidar(Campos.DESCRIPCION, ValidadorTarea.validarDescripcion(valor)))
     }
 
     fun cambiarInstrucciones(valor: String) = _ui.update {
-        it.copy(instrucciones = valor, errores = it.errores - Validaciones.CAMPO_INSTRUCCIONES)
+        it.copy(instrucciones = valor, errores = it.errores.revalidar(Campos.INSTRUCCIONES, ValidadorTarea.validarInstrucciones(valor)))
     }
 
     fun cambiarSector(valor: Long) = _ui.update {
@@ -93,23 +95,23 @@ class TareaFormViewModel(
         it.copy(
             sectorId = valor,
             cultivoId = null,
-            errores = it.errores - Validaciones.CAMPO_SECTOR
+            errores = it.errores - Campos.SECTOR
         )
     }
 
     fun cambiarCultivo(valor: Long?) = _ui.update { it.copy(cultivoId = valor) }
 
     fun cambiarResponsable(valor: Long) = _ui.update {
-        it.copy(responsableId = valor, errores = it.errores - Validaciones.CAMPO_RESPONSABLE)
+        it.copy(responsableId = valor, errores = it.errores - Campos.RESPONSABLE)
     }
 
     fun cambiarFecha(valor: String) = _ui.update {
-        it.copy(fechaProgramada = valor, errores = it.errores - Validaciones.CAMPO_FECHA_PROGRAMADA)
+        it.copy(fechaProgramada = valor, errores = it.errores - Campos.FECHA_PROGRAMADA)
     }
 
     fun guardar(usuarioId: Long) {
         val estado = _ui.value
-        val errores = Validaciones.tarea(
+        val errores = ValidadorTarea.validar(
             descripcion = estado.descripcion,
             instrucciones = estado.instrucciones,
             tipo = estado.tipo,

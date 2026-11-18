@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.sectores
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,10 +37,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.domain.EstadoSector
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /**
  * Pantalla 4: formulario para crear o editar un sector (solo administrador).
@@ -106,20 +107,20 @@ fun SectorFormScreen(
                 valor = estado.codigo,
                 alCambiar = { viewModel.cambiarCodigo(it) },
                 etiqueta = "Código del sector",
-                error = estado.errores[Validaciones.CAMPO_CODIGO],
+                error = estado.errores[Campos.CODIGO],
                 ayuda = "Entre 3 y 10 caracteres. Ejemplo: S-01"
             )
             CampoTexto(
                 valor = estado.nombre,
                 alCambiar = { viewModel.cambiarNombre(it) },
                 etiqueta = "Nombre",
-                error = estado.errores[Validaciones.CAMPO_NOMBRE]
+                error = estado.errores[Campos.NOMBRE]
             )
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
                 etiqueta = "Descripción general",
-                error = estado.errores[Validaciones.CAMPO_DESCRIPCION],
+                error = estado.errores[Campos.DESCRIPCION],
                 lineaUnica = false,
                 minimoDeLineas = 2
             )
@@ -127,7 +128,7 @@ fun SectorFormScreen(
                 valor = estado.ubicacion,
                 alCambiar = { viewModel.cambiarUbicacion(it) },
                 etiqueta = "Ubicación dentro del huerto",
-                error = estado.errores[Validaciones.CAMPO_UBICACION]
+                error = estado.errores[Campos.UBICACION]
             )
 
             SelectorDesplegable(
@@ -152,7 +153,8 @@ fun SectorFormScreen(
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (estado.esEdicion) "Guardar cambios" else "Crear sector")
+                // Animacion 8: el texto se transforma en rueda de carga al guardar.
+                ContenidoConCarga(cargando = estado.guardando, texto = if (estado.esEdicion) "Guardar cambios" else "Crear sector")
             }
 
             // ------------------- Cultivos del sector -------------------

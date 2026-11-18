@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.componentes
 
+import cl.duoc.huertoescolar.ui.animaciones.sacudirConError
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
 
 /**
  * Lista desplegable generica (sectores, cultivos, estudiantes, estados...).
@@ -42,7 +44,7 @@ fun <T> SelectorDesplegable(
 ) {
     var expandido by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().sacudirConError(error)) {
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
                 value = if (seleccionada != null) textoDe(seleccionada) else "",
@@ -65,7 +67,7 @@ fun <T> SelectorDesplegable(
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .clickableSinRipple(habilitado && opciones.isNotEmpty()) { expandido = true }
+                    .tocableConRebote(habilitado && opciones.isNotEmpty()) { expandido = true }
             )
             DropdownMenu(
                 expanded = expandido,

@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.problemas
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,11 +25,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.huertoescolar.data.local.entity.Cultivo
 import cl.duoc.huertoescolar.data.local.entity.Sector
 import cl.duoc.huertoescolar.domain.TipoProblema
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDeFoto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /**
  * Pantalla 12: registro de un problema detectado en el huerto.
@@ -81,7 +82,7 @@ fun ProblemaFormScreen(
                 seleccionada = sectores.firstOrNull { it.id == estado.sectorId },
                 textoDe = { it.codigo + " - " + it.nombre },
                 alSeleccionar = { viewModel.cambiarSector(it.id) },
-                error = estado.errores[Validaciones.CAMPO_SECTOR]
+                error = estado.errores[Campos.SECTOR]
             )
 
             // null representa "sin cultivo", para poder quitar uno elegido por error.
@@ -105,14 +106,14 @@ fun ProblemaFormScreen(
                 seleccionada = estado.tipo,
                 textoDe = { it.etiqueta },
                 alSeleccionar = { viewModel.cambiarTipo(it) },
-                error = estado.errores[Validaciones.CAMPO_TIPO]
+                error = estado.errores[Campos.TIPO]
             )
 
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
                 etiqueta = "Descripción breve del problema",
-                error = estado.errores[Validaciones.CAMPO_DESCRIPCION],
+                error = estado.errores[Campos.DESCRIPCION],
                 lineaUnica = false,
                 minimoDeLineas = 3,
                 ayuda = "Explica que viste y donde"
@@ -134,7 +135,8 @@ fun ProblemaFormScreen(
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Enviar reporte")
+                // Animacion 8: el texto se transforma en rueda de carga al guardar.
+                ContenidoConCarga(cargando = estado.guardando, texto = "Enviar reporte")
             }
         }
     }

@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.tareas
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,11 +25,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.huertoescolar.data.local.entity.Sector
 import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.domain.TipoTarea
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoFecha
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /** Opcion del selector de cultivo: id null = sin cultivo asociado. */
 private data class OpcionCultivo(val id: Long?, val texto: String)
@@ -98,21 +99,21 @@ fun TareaFormScreen(
                 seleccionada = estado.tipo,
                 textoDe = { it.etiqueta },
                 alSeleccionar = { viewModel.cambiarTipo(it) },
-                error = estado.errores[Validaciones.CAMPO_TIPO]
+                error = estado.errores[Campos.TIPO]
             )
 
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
                 etiqueta = "Descripción de la tarea",
-                error = estado.errores[Validaciones.CAMPO_DESCRIPCION]
+                error = estado.errores[Campos.DESCRIPCION]
             )
 
             CampoTexto(
                 valor = estado.instrucciones,
                 alCambiar = { viewModel.cambiarInstrucciones(it) },
                 etiqueta = "Instrucciones para el estudiante",
-                error = estado.errores[Validaciones.CAMPO_INSTRUCCIONES],
+                error = estado.errores[Campos.INSTRUCCIONES],
                 lineaUnica = false,
                 minimoDeLineas = 3
             )
@@ -123,7 +124,7 @@ fun TareaFormScreen(
                 seleccionada = sectores.firstOrNull { it.id == estado.sectorId },
                 textoDe = { it.codigo + " - " + it.nombre },
                 alSeleccionar = { viewModel.cambiarSector(it.id) },
-                error = estado.errores[Validaciones.CAMPO_SECTOR]
+                error = estado.errores[Campos.SECTOR]
             )
 
             SelectorDesplegable(
@@ -147,7 +148,7 @@ fun TareaFormScreen(
                 seleccionada = estudiantes.firstOrNull { it.id == estado.responsableId },
                 textoDe = { it.nombre + " - " + it.taller },
                 alSeleccionar = { viewModel.cambiarResponsable(it.id) },
-                error = estado.errores[Validaciones.CAMPO_RESPONSABLE],
+                error = estado.errores[Campos.RESPONSABLE],
                 textoVacio = "No hay estudiantes activos"
             )
 
@@ -155,7 +156,7 @@ fun TareaFormScreen(
                 valor = estado.fechaProgramada,
                 alCambiar = { viewModel.cambiarFecha(it) },
                 etiqueta = "Fecha programada",
-                error = estado.errores[Validaciones.CAMPO_FECHA_PROGRAMADA]
+                error = estado.errores[Campos.FECHA_PROGRAMADA]
             )
 
             Text(
@@ -170,7 +171,8 @@ fun TareaFormScreen(
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (estado.esEdicion) "Guardar cambios" else "Crear y asignar tarea")
+                // Animacion 8: el texto se transforma en rueda de carga al guardar.
+                ContenidoConCarga(cargando = estado.guardando, texto = if (estado.esEdicion) "Guardar cambios" else "Crear y asignar tarea")
             }
         }
     }

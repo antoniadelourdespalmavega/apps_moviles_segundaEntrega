@@ -22,6 +22,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
+import androidx.compose.animation.AnimatedContent
+import cl.duoc.huertoescolar.data.local.entity.Usuario
+import cl.duoc.huertoescolar.ui.animaciones.Animaciones
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -64,32 +67,64 @@ fun NavegacionHuerto(
     sesionViewModel: SesionViewModel = viewModel(factory = SesionViewModel.Factory)
 ) {
     val sesion by sesionViewModel.ui.collectAsStateWithLifecycle()
-    val navController = rememberNavController()
-    val usuario = sesion.usuarioActual
-
     var mostrarRegistro by rememberSaveable { mutableStateOf(false) }
 
-    if (usuario == null) {
-        // Sin sesion iniciada no se construye el resto de la navegacion:
-        // solo se puede ingresar o crear una cuenta.
-        if (mostrarRegistro) {
-            BackHandler { mostrarRegistro = false }
-            RegistroScreen(
-                alVolver = { mostrarRegistro = false },
-                alRegistrar = { nombreUsuario ->
-                    sesionViewModel.cuentaCreada(nombreUsuario)
-                    mostrarRegistro = false
-                }
-            )
-        } else {
-            LoginScreen(
+    // Vista actual: login, registro o la app con sesion iniciada. El cambio
+    // entre ellas se anima con un fundido y acercamiento (animacion 2).
+    val vista = when {
+        sesion.usuarioActual != null -> VistaPrincipal.APP
+        mostrarRegistro -> VistaPrincipal.REGISTRO
+        else -> VistaPrincipal.LOGIN
+    }
+
+    AnimatedContent(
+        targetState = vista,
+        transitionSpec = { Animaciones.cambioDeSesion() },
+        label = "cambioDeSesion"
+    ) { vistaActual ->
+        when (vistaActual) {
+            VistaPrincipal.LOGIN -> LoginScreen(
                 sesionViewModel = sesionViewModel,
                 alCrearCuenta = { mostrarRegistro = true }
             )
-        }
-        return
-    }
 
+            VistaPrincipal.REGISTRO -> {
+                BackHandler { mostrarRegistro = false }
+                RegistroScreen(
+                    alVolver = { mostrarRegistro = false },
+                    alRegistrar = { nombreUsuario ->
+                        sesionViewModel.cuentaCreada(nombreUsuario)
+                        mostrarRegistro = false
+                    }
+                )
+            }
+
+            VistaPrincipal.APP -> {
+                // Al cerrar sesion, la app sigue visible unos milisegundos
+                // mientras se desvanece; en ese momento el usuario ya es null.
+                val usuario = sesion.usuarioActual
+                if (usuario != null) {
+                    AppConSesion(usuario = usuario, sesionViewModel = sesionViewModel)
+                } else {
+                    Box(modifier = Modifier.fillMaxSize())
+                }
+            }
+        }
+    }
+}
+
+private enum class VistaPrincipal { LOGIN, REGISTRO, APP }
+
+/**
+ * Navegacion interna, solo con sesion iniciada. El NavController se crea
+ * aqui, de modo que cada inicio de sesion parte limpio desde el panel.
+ */
+@Composable
+private fun AppConSesion(
+    usuario: Usuario,
+    sesionViewModel: SesionViewModel
+) {
+    val navController = rememberNavController()
     val esAdministrador = usuario.rol == Rol.ADMINISTRADOR
 
     // Confirmaciones de exito: un formulario que guardo bien vuelve atras y el
@@ -102,7 +137,15 @@ fun NavegacionHuerto(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        NavHost(navController = navController, startDestination = Rutas.DASHBOARD) {
+        NavHost(
+            navController = navController,
+            startDestination = Rutas.DASHBOARD,
+            // Transicion entre pantallas (animacion 1): ver Animaciones.kt
+            enterTransition = Animaciones.entradaPantalla,
+            exitTransition = Animaciones.salidaPantalla,
+            popEnterTransition = Animaciones.entradaAlVolver,
+            popExitTransition = Animaciones.salidaAlVolver
+        ) {
 
             composable(Rutas.DASHBOARD) {
                 DashboardScreen(

@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.revision
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.expandVertically
@@ -86,10 +88,10 @@ fun RevisionScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(estado.entregas, key = { it.detalle.tarea.id }) { entrega ->
+                itemsIndexed(estado.entregas, key = { _, elemento -> elemento.detalle.tarea.id }) { indice, entrega ->
                     val tarea = entrega.detalle.tarea
                     val rechazando = form.rechazandoId == tarea.id
-                    Card(modifier = Modifier.fillMaxWidth().animateContentSize()) {
+                    Card(modifier = Modifier.animateItem().aparecerEnLista(indice).fillMaxWidth().animateContentSize()) {
                         Column(
                             modifier = Modifier.padding(14.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)

@@ -10,12 +10,15 @@ import cl.duoc.huertoescolar.data.repository.SesionRepository
 import cl.duoc.huertoescolar.domain.Cargo
 import cl.duoc.huertoescolar.domain.Operacion
 import cl.duoc.huertoescolar.domain.Rol
-import cl.duoc.huertoescolar.domain.Validaciones
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import cl.duoc.huertoescolar.domain.validacion.Campos
+import cl.duoc.huertoescolar.domain.validacion.revalidar
+import cl.duoc.huertoescolar.domain.validacion.ReglasComunes
+import cl.duoc.huertoescolar.domain.validacion.ValidadorRegistro
 
 data class RegistroUiState(
     val nombre: String = "",
@@ -42,43 +45,43 @@ class RegistroViewModel(private val repositorio: SesionRepository) : ViewModel()
     val ui: StateFlow<RegistroUiState> = _ui.asStateFlow()
 
     fun cambiarNombre(valor: String) = _ui.update {
-        it.copy(nombre = valor, errores = it.errores - Validaciones.CAMPO_NOMBRE)
+        it.copy(nombre = valor, errores = it.errores.revalidar(Campos.NOMBRE, ReglasComunes.nombrePersona(valor)))
     }
 
     fun cambiarCorreo(valor: String) = _ui.update {
-        it.copy(correo = valor, errores = it.errores - Validaciones.CAMPO_CORREO)
+        it.copy(correo = valor, errores = it.errores.revalidar(Campos.CORREO, ReglasComunes.correo(valor)))
     }
 
     fun cambiarUsuario(valor: String) = _ui.update {
-        it.copy(usuario = valor, errores = it.errores - Validaciones.CAMPO_USUARIO)
+        it.copy(usuario = valor, errores = it.errores.revalidar(Campos.USUARIO, ReglasComunes.nombreUsuario(valor)))
     }
 
     fun cambiarClave(valor: String) = _ui.update {
-        it.copy(clave = valor, errores = it.errores - Validaciones.CAMPO_CLAVE)
+        it.copy(clave = valor, errores = it.errores.revalidar(Campos.CLAVE, ReglasComunes.clave(valor)))
     }
 
     fun cambiarConfirmar(valor: String) = _ui.update {
-        it.copy(confirmar = valor, errores = it.errores - Validaciones.CAMPO_CONFIRMAR)
+        it.copy(confirmar = valor, errores = it.errores.revalidar(Campos.CONFIRMAR, ReglasComunes.confirmacion(it.clave, valor)))
     }
 
     fun cambiarCargo(valor: Cargo) = _ui.update {
         it.copy(
             cargo = valor,
-            errores = it.errores - Validaciones.CAMPO_CARGO - Validaciones.CAMPO_CODIGO_AUTORIZACION
+            errores = it.errores - Campos.CARGO - Campos.CODIGO_AUTORIZACION
         )
     }
 
     fun cambiarTaller(valor: String) = _ui.update {
-        it.copy(taller = valor, errores = it.errores - Validaciones.CAMPO_TALLER)
+        it.copy(taller = valor, errores = it.errores.revalidar(Campos.TALLER, ValidadorRegistro.validarTaller(valor)))
     }
 
     fun cambiarCodigo(valor: String) = _ui.update {
-        it.copy(codigoAutorizacion = valor, errores = it.errores - Validaciones.CAMPO_CODIGO_AUTORIZACION)
+        it.copy(codigoAutorizacion = valor, errores = it.errores.revalidar(Campos.CODIGO_AUTORIZACION, ValidadorRegistro.validarCodigoAutorizacion(it.cargo, valor)))
     }
 
     fun registrar() {
         val estado = _ui.value
-        val errores = Validaciones.registro(
+        val errores = ValidadorRegistro.validar(
             nombre = estado.nombre,
             correo = estado.correo,
             usuario = estado.usuario,

@@ -1,5 +1,7 @@
 package cl.duoc.huertoescolar.ui.sensores
 
+import cl.duoc.huertoescolar.ui.animaciones.aparecerEnLista
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -116,8 +118,8 @@ fun SensoresScreen(
                         )
                     }
                 } else {
-                    items(estado.lecturas, key = { it.lectura.id }) { item ->
-                        Card(modifier = Modifier.fillMaxWidth()) {
+                    itemsIndexed(estado.lecturas, key = { _, elemento -> elemento.lectura.id }) { indice, item ->
+                        Card(modifier = Modifier.animateItem().aparecerEnLista(indice).fillMaxWidth()) {
                             Column(modifier = Modifier.padding(14.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),

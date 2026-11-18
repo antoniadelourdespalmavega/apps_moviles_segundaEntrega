@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.componentes
 
+import cl.duoc.huertoescolar.ui.animaciones.sacudirConError
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,7 +34,7 @@ fun CampoClave(
 ) {
     var visible by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().sacudirConError(error)) {
         OutlinedTextField(
             value = valor,
             onValueChange = alCambiar,

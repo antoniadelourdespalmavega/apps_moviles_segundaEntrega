@@ -1,5 +1,6 @@
 package cl.duoc.huertoescolar.ui.cultivos
 
+import cl.duoc.huertoescolar.ui.animaciones.ContenidoConCarga
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,12 +30,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cl.duoc.huertoescolar.data.local.entity.Sector
 import cl.duoc.huertoescolar.domain.EstadoCultivo
-import cl.duoc.huertoescolar.domain.Validaciones
 import cl.duoc.huertoescolar.ui.componentes.BarraSuperior
 import cl.duoc.huertoescolar.ui.componentes.CampoFecha
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDeFoto
 import cl.duoc.huertoescolar.ui.componentes.SelectorDesplegable
+import cl.duoc.huertoescolar.domain.validacion.Campos
 
 /**
  * Pantalla 6: formulario de cultivo (solo administrador).
@@ -109,13 +110,13 @@ fun CultivoFormScreen(
                 valor = estado.nombre,
                 alCambiar = { viewModel.cambiarNombre(it) },
                 etiqueta = "Nombre comun de la planta",
-                error = estado.errores[Validaciones.CAMPO_NOMBRE]
+                error = estado.errores[Campos.NOMBRE]
             )
             CampoTexto(
                 valor = estado.descripcion,
                 alCambiar = { viewModel.cambiarDescripcion(it) },
                 etiqueta = "Descripción",
-                error = estado.errores[Validaciones.CAMPO_DESCRIPCION],
+                error = estado.errores[Campos.DESCRIPCION],
                 lineaUnica = false,
                 minimoDeLineas = 2
             )
@@ -126,7 +127,7 @@ fun CultivoFormScreen(
                 seleccionada = sectores.firstOrNull { it.id == estado.sectorId },
                 textoDe = { it.codigo + " - " + it.nombre },
                 alSeleccionar = { viewModel.cambiarSector(it.id) },
-                error = estado.errores[Validaciones.CAMPO_SECTOR],
+                error = estado.errores[Campos.SECTOR],
                 textoVacio = "Primero debes crear un sector"
             )
 
@@ -136,7 +137,7 @@ fun CultivoFormScreen(
                 valor = estado.fechaCosecha,
                 alCambiar = { viewModel.cambiarCosecha(it) },
                 etiqueta = "Fecha estimada de cosecha",
-                error = estado.errores[Validaciones.CAMPO_COSECHA]
+                error = estado.errores[Campos.COSECHA]
             )
             Text(
                 text = "Siembra registrada: " + estado.fechaSiembra +
@@ -148,7 +149,7 @@ fun CultivoFormScreen(
                 valor = estado.frecuenciaRiego,
                 alCambiar = { viewModel.cambiarRiego(it) },
                 etiqueta = "Frecuencia de riego (días)",
-                error = estado.errores[Validaciones.CAMPO_RIEGO],
+                error = estado.errores[Campos.RIEGO],
                 teclado = KeyboardType.Number,
                 ayuda = "Número mayor que cero"
             )
@@ -185,7 +186,8 @@ fun CultivoFormScreen(
                 enabled = !estado.guardando,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (estado.esEdicion) "Guardar cambios" else "Registrar cultivo")
+                // Animacion 8: el texto se transforma en rueda de carga al guardar.
+                ContenidoConCarga(cargando = estado.guardando, texto = if (estado.esEdicion) "Guardar cambios" else "Registrar cultivo")
             }
 
             if (estado.esEdicion) {
