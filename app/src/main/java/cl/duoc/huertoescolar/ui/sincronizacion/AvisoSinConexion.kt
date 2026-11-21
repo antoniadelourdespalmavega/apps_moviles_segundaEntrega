@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Franja que aparece (deslizandose desde abajo) cuando no hay conexion con
- * los microservicios. La app sigue mostrando la ultima copia local.
+ * el microservicio. La app sigue mostrando la ultima copia local.
  */
 @Composable
 fun AvisoSinConexion(

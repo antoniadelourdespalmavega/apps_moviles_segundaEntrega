@@ -193,5 +193,5 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
     }
 }
 
-/** Contrasena de las cuentas ficticias que crea ms-usuarios (DataInitializer). */
+/** Contrasena de las cuentas ficticias que crea ms-huerto-escolar (DataInitializer). */
 private const val CLAVE_CUENTAS_DEMO = "huerto123"

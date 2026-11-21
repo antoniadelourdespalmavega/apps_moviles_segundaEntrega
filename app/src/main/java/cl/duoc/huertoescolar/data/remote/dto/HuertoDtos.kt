@@ -1,7 +1,7 @@
 package cl.duoc.huertoescolar.data.remote.dto
 
 /*
- * Modelos de lectura (Dto) y de escritura (Request) de ms-huerto.
+ * Modelos de lectura (Dto) y de escritura (Request) de ms-huerto-escolar.
  * Se separan igual que en la clase: lo que se recibe trae id y fechas que
  * genera el servidor; lo que se envia solo trae los datos del formulario.
  */

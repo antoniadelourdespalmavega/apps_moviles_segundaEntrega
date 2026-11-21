@@ -1,6 +1,6 @@
 package cl.duoc.huertoescolar.data.remote.dto
 
-/** Usuario tal como lo entrega ms-usuarios (sin contrasena). */
+/** Usuario tal como lo entrega ms-huerto-escolar (sin contrasena). */
 data class UsuarioDto(
     val id: Long,
     val nombreUsuario: String,

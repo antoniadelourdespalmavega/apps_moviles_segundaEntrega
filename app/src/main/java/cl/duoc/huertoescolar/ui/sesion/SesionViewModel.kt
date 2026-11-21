@@ -41,7 +41,7 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
 
     /**
      * Cuentas registradas (las de prueba y las creadas con el registro).
-     * Se leen de la copia local (Room), que se actualiza desde ms-usuarios.
+     * Se leen de la copia local (Room), que se actualiza desde ms-huerto-escolar.
      */
     val cuentas: StateFlow<List<Usuario>> = repositorio.observarUsuarios()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -53,7 +53,7 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
         actualizarCuentas()
     }
 
-    /** Trae las cuentas desde ms-usuarios para mostrarlas en el login. */
+    /** Trae las cuentas desde ms-huerto-escolar para mostrarlas en el login. */
     fun actualizarCuentas() {
         viewModelScope.launch {
             val resultado = repositorio.actualizarCuentas()
@@ -80,7 +80,7 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
         }
         _ui.update { it.copy(cargando = true, errores = emptyMap(), mensaje = null, informacion = null) }
         viewModelScope.launch {
-            // ms-usuarios revisa la contrasena y responde con el usuario o con
+            // ms-huerto-escolar revisa la contrasena y responde con el usuario o con
             // el motivo del error (clave incorrecta, servidor apagado...).
             when (val resultado = repositorio.autenticar(estado.usuario, estado.clave)) {
                 is Resultado.Exito -> _ui.update {

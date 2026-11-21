@@ -1,6 +1,6 @@
 package cl.duoc.huertoescolar.data.remote.dto
 
-/* Modelos de ms-actividades: tareas, evidencias, validaciones y reportes. */
+/* Modelos de ms-huerto-escolar: tareas, evidencias, validaciones y reportes. */
 
 data class TareaDto(
     val id: Long,

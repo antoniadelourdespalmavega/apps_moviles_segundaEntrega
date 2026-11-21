@@ -26,7 +26,7 @@ import cl.duoc.huertoescolar.data.local.entity.Validacion
 /**
  * Base de datos local (Room sobre SQLite).
  *
- * Desde la tercera entrega los datos "oficiales" viven en los microservicios.
+ * Desde la tercera entrega los datos "oficiales" viven en el microservicio.
  * Room guarda una copia local: las pantallas leen de aqui (se actualizan
  * solas) y se sigue viendo la ultima informacion si se corta la conexion.
  */
@@ -41,7 +41,7 @@ import cl.duoc.huertoescolar.data.local.entity.Validacion
         ReporteProblema::class,
         LecturaSensor::class
     ],
-    // Version 3: los datos ahora vienen de los microservicios (Room es la copia local).
+    // Version 3: los datos ahora vienen del microservicio (Room es la copia local).
     version = 3,
     exportSchema = true
 )

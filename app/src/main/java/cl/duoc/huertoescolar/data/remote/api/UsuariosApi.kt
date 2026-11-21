@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-/** Endpoints de ms-usuarios (puerto 8081). */
+/** Endpoints de usuarios del microservicio ms-huerto-escolar (puerto 8080). */
 interface UsuariosApi {
 
     @GET("usuarios")

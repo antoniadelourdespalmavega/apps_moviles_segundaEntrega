@@ -14,7 +14,7 @@ import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.data.local.entity.Validacion
 
 /**
- * Guarda en Room la copia de los datos que llegan de los microservicios.
+ * Guarda en Room la copia de los datos que llegan del microservicio.
  *
  * Cada metodo "aplicar" corre dentro de una transaccion: inserta o actualiza
  * (@Upsert) lo que trae el servidor y borra lo que ya no existe alla. Si algo
@@ -112,14 +112,14 @@ abstract class SincronizacionDao {
     }
 }
 
-/** Datos de ms-huerto listos para guardar en Room. */
+/** Datos de ms-huerto-escolar listos para guardar en Room. */
 data class DatosHuerto(
     val sectores: List<Sector>,
     val cultivos: List<Cultivo>,
     val lecturas: List<LecturaSensor>
 )
 
-/** Datos de ms-actividades listos para guardar en Room. */
+/** Datos de ms-huerto-escolar listos para guardar en Room. */
 data class DatosActividades(
     val tareas: List<Tarea>,
     val evidencias: List<Evidencia>,

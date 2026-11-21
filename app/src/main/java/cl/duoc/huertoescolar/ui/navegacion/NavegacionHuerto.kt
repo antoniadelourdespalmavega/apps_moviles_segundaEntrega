@@ -135,7 +135,7 @@ private fun AppConSesion(
     val navController = rememberNavController()
     val esAdministrador = usuario.rol == Rol.ADMINISTRADOR
 
-    // Sincronizacion con los microservicios: al entrar y luego cada 15 segundos,
+    // Sincronizacion con el microservicio: al entrar y luego cada 15 segundos,
     // solo mientras la app esta visible (STARTED). Al salir de la app se detiene.
     val sincronizacionViewModel: SincronizacionViewModel =
         viewModel(factory = SincronizacionViewModel.Factory)

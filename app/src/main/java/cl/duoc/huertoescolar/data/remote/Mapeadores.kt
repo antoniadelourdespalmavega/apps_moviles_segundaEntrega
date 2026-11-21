@@ -28,7 +28,7 @@ import cl.duoc.huertoescolar.domain.TipoProblema
 import cl.duoc.huertoescolar.domain.TipoTarea
 
 /*
- * Conversion de lo que llega de los microservicios (Dto) a las entidades de
+ * Conversion de lo que llega del microservicio (Dto) a las entidades de
  * Room, que es donde la app guarda su copia local. Las pantallas siguen
  * leyendo de Room, asi funcionan igual que antes y se actualizan solas.
  */

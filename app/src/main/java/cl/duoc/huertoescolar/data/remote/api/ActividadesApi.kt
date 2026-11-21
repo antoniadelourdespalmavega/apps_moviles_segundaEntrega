@@ -19,7 +19,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-/** Endpoints de ms-actividades (puerto 8083). */
+/** Endpoints de tareas, historial y reportes del microservicio ms-huerto-escolar (puerto 8080). */
 interface ActividadesApi {
 
     // ------------------------------ Tareas ------------------------------

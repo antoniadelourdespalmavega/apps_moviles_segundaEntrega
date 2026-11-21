@@ -15,7 +15,7 @@ import cl.duoc.huertoescolar.domain.Rol
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Cuentas de usuario contra ms-usuarios: inicio de sesion, registro y
+ * Cuentas de usuario contra ms-huerto-escolar: inicio de sesion, registro y
  * edicion del perfil. La lista de usuarios se lee de la copia local (Room).
  */
 class SesionRepository(

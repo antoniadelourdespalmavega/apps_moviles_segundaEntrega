@@ -9,7 +9,7 @@ import cl.duoc.huertoescolar.domain.clima.Clima
 
 /**
  * API EXTERNA: clima de San Bernardo desde Open-Meteo.
- * Es independiente de los microservicios y de Room: no guarda nada, solo
+ * Es independiente del microservicio y de Room: no guarda nada, solo
  * consulta y entrega el clima para mostrarlo en la app.
  */
 class ClimaRepository(private val api: ClimaApi) {

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/** Estado de la conexion con los microservicios. */
+/** Estado de la conexion con el microservicio. */
 data class SincronizacionUiState(
     val conectado: Boolean = true,
     val sincronizando: Boolean = false,
@@ -25,7 +25,7 @@ data class SincronizacionUiState(
 
 /**
  * Mantiene la copia local al dia: mientras la app esta abierta se sincroniza
- * con los microservicios cada pocos segundos (ver NavegacionHuerto). Asi los
+ * con el microservicio cada pocos segundos (ver NavegacionHuerto). Asi los
  * cambios hechos desde otro telefono aparecen sin tener que recargar.
  */
 class SincronizacionViewModel(

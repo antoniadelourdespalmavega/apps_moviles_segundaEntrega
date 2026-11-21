@@ -20,7 +20,7 @@ import cl.duoc.huertoescolar.domain.Resultado
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Sectores y cultivos del huerto contra ms-huerto.
+ * Sectores y cultivos del huerto contra ms-huerto-escolar.
  * Lectura: desde la copia local (Room). Escritura: se envia al microservicio
  * y luego se actualiza la copia local.
  */
@@ -86,7 +86,7 @@ class HuertoRepository(
 
     /**
      * Solo se elimina un sector sin tareas asociadas, para no perder historial.
-     * Las tareas viven en otro microservicio, por eso esta regla se revisa aqui.
+     * El microservicio tambien la revisa; aqui se adelanta para responder al instante.
      */
     suspend fun eliminarSector(id: Long): Operacion {
         if (tareaDao.contarPorSector(id) > 0) {

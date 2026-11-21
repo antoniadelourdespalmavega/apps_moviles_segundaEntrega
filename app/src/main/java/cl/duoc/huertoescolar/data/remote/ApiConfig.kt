@@ -1,7 +1,7 @@
 package cl.duoc.huertoescolar.data.remote
 
 /**
- * Direcciones de los microservicios y de la API externa.
+ * Direcciones del microservicio propio y de la API externa.
  *
  * 10.0.2.2 es el computador visto desde el emulador de Android. Si prueban en
  * un celular real, cambien HOST por la IP del computador en la misma red
@@ -11,14 +11,11 @@ package cl.duoc.huertoescolar.data.remote
 object ApiConfig {
     private const val HOST = "http://10.0.2.2"
 
-    /** ms-usuarios: login, registro y perfil. */
-    const val URL_USUARIOS = "$HOST:8081/"
-
-    /** ms-huerto: sectores, cultivos y lecturas simuladas de sensores. */
-    const val URL_HUERTO = "$HOST:8082/"
-
-    /** ms-actividades: tareas, evidencias, validaciones y reportes. */
-    const val URL_ACTIVIDADES = "$HOST:8083/"
+    /**
+     * ms-huerto-escolar: microservicio unico con usuarios, sectores, cultivos,
+     * lecturas simuladas, tareas, evidencias, validaciones y reportes.
+     */
+    const val URL_BACKEND = "$HOST:8080/"
 
     /** API externa de clima Open-Meteo (gratis, sin clave). */
     const val URL_CLIMA = "https://api.open-meteo.com/"

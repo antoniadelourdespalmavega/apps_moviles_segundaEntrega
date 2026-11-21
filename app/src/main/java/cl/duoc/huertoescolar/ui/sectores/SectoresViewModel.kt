@@ -10,6 +10,7 @@ import cl.duoc.huertoescolar.data.local.entity.Cultivo
 import cl.duoc.huertoescolar.data.local.entity.Sector
 import cl.duoc.huertoescolar.data.local.query.SectorResumen
 import cl.duoc.huertoescolar.data.repository.HuertoRepository
+import cl.duoc.huertoescolar.data.repository.SesionRepository
 import cl.duoc.huertoescolar.domain.EstadoSector
 import cl.duoc.huertoescolar.domain.Operacion
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -161,7 +162,10 @@ data class SectorFormUiState(
     val esEdicion: Boolean get() = id != 0L
 }
 
-class SectorFormViewModel(private val repositorio: HuertoRepository) : ViewModel() {
+class SectorFormViewModel(
+    private val repositorio: HuertoRepository,
+    sesionRepository: SesionRepository
+) : ViewModel() {
 
     private val _ui = MutableStateFlow(SectorFormUiState())
     val ui: StateFlow<SectorFormUiState> = _ui.asStateFlow()
@@ -180,7 +184,7 @@ class SectorFormViewModel(private val repositorio: HuertoRepository) : ViewModel
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val responsables = Contenedor.sesionRepository.observarUsuarios()
+    val responsables = sesionRepository.observarUsuarios()
         .map { lista -> lista.filter { it.rol == cl.duoc.huertoescolar.domain.Rol.ADMINISTRADOR } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -257,7 +261,7 @@ class SectorFormViewModel(private val repositorio: HuertoRepository) : ViewModel
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer { SectorFormViewModel(Contenedor.huertoRepository) }
+            initializer { SectorFormViewModel(Contenedor.huertoRepository, Contenedor.sesionRepository) }
         }
     }
 }

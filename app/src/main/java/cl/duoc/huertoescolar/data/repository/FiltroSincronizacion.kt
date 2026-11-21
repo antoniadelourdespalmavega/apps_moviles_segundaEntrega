@@ -4,11 +4,13 @@ import cl.duoc.huertoescolar.data.local.dao.DatosActividades
 import cl.duoc.huertoescolar.data.local.dao.DatosHuerto
 
 /**
- * Cada microservicio tiene su propia base de datos, asi que un registro puede
- * apuntar a algo que otro servicio ya no tiene (por ejemplo, una tarea de un
- * sector eliminado). Room si exige claves foraneas validas, por eso antes de
- * guardar se descartan los registros "huerfanos" y se limpian las referencias
- * opcionales. Es logica pura: se prueba con JUnit.
+ * Room exige claves foraneas validas. Aunque ahora todo el backend vive en un
+ * solo microservicio y una sola base de datos, los listados se piden en
+ * varias llamadas, por lo que entre una y otra un registro puede quedar
+ * apuntando a algo recien eliminado (por ejemplo, un cultivo borrado desde
+ * otro telefono). Por eso antes de guardar se descartan los registros
+ * "huerfanos" y se limpian las referencias opcionales. Es logica pura: se
+ * prueba con JUnit.
  */
 object FiltroSincronizacion {
 

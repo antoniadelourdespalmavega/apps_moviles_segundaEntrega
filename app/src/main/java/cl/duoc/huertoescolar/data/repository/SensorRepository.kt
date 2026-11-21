@@ -9,7 +9,7 @@ import cl.duoc.huertoescolar.domain.Resultado
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Lecturas SIMULADAS de sensores. Las genera ms-huerto (no hay hardware): los
+ * Lecturas SIMULADAS de sensores. Las genera ms-huerto-escolar (no hay hardware): los
  * valores son ficticios y solo demuestran una posible integracion futura.
  */
 class SensorRepository(

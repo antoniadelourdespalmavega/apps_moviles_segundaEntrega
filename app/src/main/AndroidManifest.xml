@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Necesario para conectarse a los microservicios y a la API de clima. -->
+    <!-- Necesario para conectarse al microservicio y a la API de clima. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- La cámara es opcional: la app funciona igual en equipos sin cámara. -->

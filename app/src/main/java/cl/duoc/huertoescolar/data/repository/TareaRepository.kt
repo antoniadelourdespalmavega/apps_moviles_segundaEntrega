@@ -24,7 +24,7 @@ import cl.duoc.huertoescolar.domain.TipoTarea
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Tareas del huerto, evidencias y validaciones contra ms-actividades.
+ * Tareas del huerto, evidencias y validaciones contra ms-huerto-escolar.
  *
  * Flujo de estados: PENDIENTE -> EN_DESARROLLO -> PENDIENTE_VALIDACION ->
  * VALIDADA / RECHAZADA. Los permisos se revisan dos veces: aqui (respuesta

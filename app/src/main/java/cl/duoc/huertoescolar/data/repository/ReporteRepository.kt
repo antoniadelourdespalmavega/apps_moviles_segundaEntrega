@@ -14,7 +14,7 @@ import cl.duoc.huertoescolar.domain.Rol
 import cl.duoc.huertoescolar.domain.TipoProblema
 import kotlinx.coroutines.flow.Flow
 
-/** Reportes de problemas del huerto y su seguimiento, contra ms-actividades. */
+/** Reportes de problemas del huerto y su seguimiento, contra ms-huerto-escolar. */
 class ReporteRepository(
     private val api: ActividadesApi,
     private val reporteDao: ReporteDao,

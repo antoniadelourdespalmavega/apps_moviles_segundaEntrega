@@ -12,9 +12,9 @@ import cl.duoc.huertoescolar.domain.Operacion
 import cl.duoc.huertoescolar.domain.Resultado
 
 /**
- * Trae los datos de los tres microservicios y actualiza la copia local (Room).
+ * Trae los datos del microservicio y actualiza la copia local (Room).
  *
- * Los microservicios son la fuente de la verdad. Room funciona como copia
+ * El microservicio es la fuente de la verdad. Room funciona como copia
  * local: las pantallas leen de ahi, asi se redibujan solas cuando llegan datos
  * nuevos y siguen mostrando la ultima informacion si se corta la conexion.
  */
@@ -71,7 +71,7 @@ class SincronizacionRepository(
             val resultado = paso()
             if (resultado is Operacion.Error) return resultado
         }
-        return Operacion.Exito("Datos sincronizados con los microservicios")
+        return Operacion.Exito("Datos sincronizados con el microservicio")
     }
 
     private fun aOperacion(resultado: Resultado<Unit>): Operacion = when (resultado) {

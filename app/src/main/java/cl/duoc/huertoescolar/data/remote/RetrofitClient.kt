@@ -10,13 +10,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * Crea un cliente Retrofit por cada servicio (cada microservicio tiene su
- * propio puerto). Igual que en el ejemplo del docente, se usa Gson para
+ * Clientes Retrofit. Igual que en el ejemplo del docente, se usa Gson para
  * convertir el JSON a objetos de Kotlin.
+ *
+ * Todo el backend vive en un solo microservicio (ms-huerto-escolar), por eso
+ * usuariosApi, huertoApi y actividadesApi comparten la misma instancia de
+ * Retrofit y la misma URL. Se mantienen como tres interfaces solo para
+ * ordenar los endpoints por modulo.
  */
 object RetrofitClient {
 
-    // Si un microservicio esta apagado, se informa en pocos segundos en vez de esperar.
+    // Si el microservicio esta apagado, se informa en pocos segundos en vez de esperar.
     private val clienteHttp: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .connectTimeout(5, TimeUnit.SECONDS)
@@ -31,17 +35,13 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-    val usuariosApi: UsuariosApi by lazy {
-        crear(ApiConfig.URL_USUARIOS).create(UsuariosApi::class.java)
-    }
+    private val backend: Retrofit by lazy { crear(ApiConfig.URL_BACKEND) }
 
-    val huertoApi: HuertoApi by lazy {
-        crear(ApiConfig.URL_HUERTO).create(HuertoApi::class.java)
-    }
+    val usuariosApi: UsuariosApi by lazy { backend.create(UsuariosApi::class.java) }
 
-    val actividadesApi: ActividadesApi by lazy {
-        crear(ApiConfig.URL_ACTIVIDADES).create(ActividadesApi::class.java)
-    }
+    val huertoApi: HuertoApi by lazy { backend.create(HuertoApi::class.java) }
+
+    val actividadesApi: ActividadesApi by lazy { backend.create(ActividadesApi::class.java) }
 
     val climaApi: ClimaApi by lazy {
         crear(ApiConfig.URL_CLIMA).create(ClimaApi::class.java)

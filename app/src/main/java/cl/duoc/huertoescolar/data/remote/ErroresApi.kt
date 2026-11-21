@@ -7,7 +7,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-/** Cuerpo de error que devuelven los microservicios: {"mensaje": "..."}. */
+/** Cuerpo de error que devuelve el microservicio: {"mensaje": "..."}. */
 data class ErrorDto(val mensaje: String?)
 
 /**
@@ -19,7 +19,7 @@ data class ErrorDto(val mensaje: String?)
 object ErroresApi {
 
     const val SIN_CONEXION =
-        "No se pudo conectar con el servidor. Revisa que los microservicios estén encendidos."
+        "No se pudo conectar con el servidor. Revisa que el microservicio esté encendido."
 
     private val gson = Gson()
 

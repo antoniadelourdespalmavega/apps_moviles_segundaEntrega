@@ -34,7 +34,7 @@ data class SensoresUiState(
 
 /**
  * Lecturas simuladas de sensores (solo consulta).
- * Los valores los genera ms-huerto: no hay sensores, placas
+ * Los valores los genera ms-huerto-escolar: no hay sensores, placas
  * Arduino o ESP32 conectados, y asi se indica siempre en la pantalla.
  */
 class SensoresViewModel(
@@ -45,7 +45,7 @@ class SensoresViewModel(
     private val filtroSectorId = MutableStateFlow<Long?>(null)
 
     init {
-        // ms-huerto genera una lectura simulada para los sectores que aun no
+        // ms-huerto-escolar genera una lectura simulada para los sectores que aun no
         // tienen ninguna, y luego se actualiza la copia local.
         viewModelScope.launch {
             sensorRepository.simularLecturasFaltantes()

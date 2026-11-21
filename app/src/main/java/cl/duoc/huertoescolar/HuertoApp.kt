@@ -80,8 +80,8 @@ object Contenedor {
 
 /**
  * Los datos de prueba (usuarios, sectores, cultivos y lecturas) ya no se
- * cargan aqui: ahora los crean los microservicios al arrancar por primera vez
- * (clase DataInitializer de cada uno).
+ * cargan aqui: ahora los crea el microservicio al arrancar por primera vez
+ * (clase DataInitializer).
  */
 class HuertoApp : Application() {
 
