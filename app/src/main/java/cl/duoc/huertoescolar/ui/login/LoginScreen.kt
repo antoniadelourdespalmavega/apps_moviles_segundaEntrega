@@ -31,7 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import cl.duoc.huertoescolar.data.local.DatosDePrueba
 import cl.duoc.huertoescolar.ui.componentes.CampoClave
 import cl.duoc.huertoescolar.ui.componentes.CampoTexto
 import cl.duoc.huertoescolar.ui.componentes.EncabezadoHoja
@@ -175,7 +174,7 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        text = "Contraseña de las cuentas de prueba: " + DatosDePrueba.CLAVE_DEMO,
+                        text = "Contraseña de las cuentas de prueba: " + CLAVE_CUENTAS_DEMO,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -193,3 +192,6 @@ fun LoginScreen(sesionViewModel: SesionViewModel, alCrearCuenta: () -> Unit) {
         }
     }
 }
+
+/** Contrasena de las cuentas ficticias que crea ms-usuarios (DataInitializer). */
+private const val CLAVE_CUENTAS_DEMO = "huerto123"

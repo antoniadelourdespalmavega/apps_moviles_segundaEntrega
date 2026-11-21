@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import cl.duoc.huertoescolar.Contenedor
 import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.data.repository.SesionRepository
+import cl.duoc.huertoescolar.domain.Operacion
+import cl.duoc.huertoescolar.domain.Resultado
 import cl.duoc.huertoescolar.domain.Rol
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,13 +41,27 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
 
     /**
      * Cuentas registradas (las de prueba y las creadas con el registro).
-     * Se leen de Room, asi una cuenta nueva aparece en el login al instante.
+     * Se leen de la copia local (Room), que se actualiza desde ms-usuarios.
      */
     val cuentas: StateFlow<List<Usuario>> = repositorio.observarUsuarios()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     private val _ui = MutableStateFlow(SesionUiState())
     val ui: StateFlow<SesionUiState> = _ui.asStateFlow()
+
+    init {
+        actualizarCuentas()
+    }
+
+    /** Trae las cuentas desde ms-usuarios para mostrarlas en el login. */
+    fun actualizarCuentas() {
+        viewModelScope.launch {
+            val resultado = repositorio.actualizarCuentas()
+            if (resultado is Operacion.Error && _ui.value.usuarioActual == null) {
+                _ui.update { it.copy(mensaje = resultado.mensaje) }
+            }
+        }
+    }
 
     fun cambiarUsuario(valor: String) {
         _ui.update { it.copy(usuario = valor, errores = it.errores.revalidar(Campos.USUARIO, ValidadorLogin.validarUsuario(valor))) }
@@ -64,22 +80,19 @@ class SesionViewModel(private val repositorio: SesionRepository) : ViewModel() {
         }
         _ui.update { it.copy(cargando = true, errores = emptyMap(), mensaje = null, informacion = null) }
         viewModelScope.launch {
-            val encontrado = repositorio.autenticar(estado.usuario, estado.clave)
-            if (encontrado == null) {
-                _ui.update {
+            // ms-usuarios revisa la contrasena y responde con el usuario o con
+            // el motivo del error (clave incorrecta, servidor apagado...).
+            when (val resultado = repositorio.autenticar(estado.usuario, estado.clave)) {
+                is Resultado.Exito -> _ui.update {
                     it.copy(
                         cargando = false,
-                        mensaje = "Usuario, correo o contraseña incorrectos"
-                    )
-                }
-            } else {
-                _ui.update {
-                    it.copy(
-                        cargando = false,
-                        usuarioActual = encontrado,
+                        usuarioActual = resultado.dato,
                         clave = "",
                         mensaje = null
                     )
+                }
+                is Resultado.Error -> _ui.update {
+                    it.copy(cargando = false, mensaje = resultado.mensaje)
                 }
             }
         }

@@ -2,25 +2,26 @@ package cl.duoc.huertoescolar
 
 import android.app.Application
 import android.content.Context
-import cl.duoc.huertoescolar.data.local.DatosDePrueba
 import cl.duoc.huertoescolar.data.local.HuertoDatabase
+import cl.duoc.huertoescolar.data.remote.RetrofitClient
+import cl.duoc.huertoescolar.data.repository.ClimaRepository
 import cl.duoc.huertoescolar.data.repository.HuertoRepository
 import cl.duoc.huertoescolar.data.repository.ReporteRepository
 import cl.duoc.huertoescolar.data.repository.SensorRepository
 import cl.duoc.huertoescolar.data.repository.SesionRepository
+import cl.duoc.huertoescolar.data.repository.SincronizacionRepository
 import cl.duoc.huertoescolar.data.repository.TareaRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 /**
- * Punto unico donde se crean la base de datos y los repositorios.
- * Los ViewModel los obtienen desde aqui, de modo que la UI nunca conoce a Room.
+ * Punto unico donde se crean la base de datos local, los clientes Retrofit y
+ * los repositorios. Los ViewModel los obtienen desde aqui, de modo que la UI
+ * nunca conoce a Room ni a Retrofit.
  */
 object Contenedor {
 
     lateinit var baseDatos: HuertoDatabase
+        private set
+    lateinit var sincronizacionRepository: SincronizacionRepository
         private set
     lateinit var sesionRepository: SesionRepository
         private set
@@ -32,6 +33,8 @@ object Contenedor {
         private set
     lateinit var sensorRepository: SensorRepository
         private set
+    lateinit var climaRepository: ClimaRepository
+        private set
 
     private var iniciado = false
 
@@ -39,30 +42,51 @@ object Contenedor {
         if (iniciado) return
         val db = HuertoDatabase.obtener(context)
         baseDatos = db
-        sesionRepository = SesionRepository(db.usuarioDao())
-        huertoRepository = HuertoRepository(db.sectorDao(), db.cultivoDao(), db.tareaDao())
+
+        val sincronizacion = SincronizacionRepository(
+            usuariosApi = RetrofitClient.usuariosApi,
+            huertoApi = RetrofitClient.huertoApi,
+            actividadesApi = RetrofitClient.actividadesApi,
+            dao = db.sincronizacionDao()
+        )
+        sincronizacionRepository = sincronizacion
+        sesionRepository = SesionRepository(RetrofitClient.usuariosApi, db.usuarioDao(), sincronizacion)
+        huertoRepository = HuertoRepository(
+            RetrofitClient.huertoApi,
+            db.sectorDao(),
+            db.cultivoDao(),
+            db.tareaDao(),
+            sincronizacion
+        )
         tareaRepository = TareaRepository(
+            RetrofitClient.actividadesApi,
             db.tareaDao(),
             db.evidenciaDao(),
             db.validacionDao(),
-            db.usuarioDao()
+            db.usuarioDao(),
+            sincronizacion
         )
-        reporteRepository = ReporteRepository(db.reporteDao(), db.usuarioDao())
-        sensorRepository = SensorRepository(db.sensorDao())
+        reporteRepository = ReporteRepository(
+            RetrofitClient.actividadesApi,
+            db.reporteDao(),
+            db.usuarioDao(),
+            sincronizacion
+        )
+        sensorRepository = SensorRepository(RetrofitClient.huertoApi, db.sensorDao(), sincronizacion)
+        climaRepository = ClimaRepository(RetrofitClient.climaApi)
         iniciado = true
     }
 }
 
+/**
+ * Los datos de prueba (usuarios, sectores, cultivos y lecturas) ya no se
+ * cargan aqui: ahora los crean los microservicios al arrancar por primera vez
+ * (clase DataInitializer de cada uno).
+ */
 class HuertoApp : Application() {
-
-    private val alcance = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onCreate() {
         super.onCreate()
         Contenedor.iniciar(this)
-        // Carga los datos ficticios la primera vez que se abre la aplicacion.
-        alcance.launch {
-            DatosDePrueba.cargarSiEstaVacia(applicationContext, Contenedor.baseDatos)
-        }
     }
 }

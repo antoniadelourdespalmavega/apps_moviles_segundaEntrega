@@ -22,6 +22,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
+import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.delay
+import cl.duoc.huertoescolar.ui.clima.ClimaScreen
+import cl.duoc.huertoescolar.ui.sincronizacion.AvisoSinConexion
+import cl.duoc.huertoescolar.ui.sincronizacion.SincronizacionViewModel
 import androidx.compose.animation.AnimatedContent
 import cl.duoc.huertoescolar.data.local.entity.Usuario
 import cl.duoc.huertoescolar.ui.animaciones.Animaciones
@@ -127,6 +135,21 @@ private fun AppConSesion(
     val navController = rememberNavController()
     val esAdministrador = usuario.rol == Rol.ADMINISTRADOR
 
+    // Sincronizacion con los microservicios: al entrar y luego cada 15 segundos,
+    // solo mientras la app esta visible (STARTED). Al salir de la app se detiene.
+    val sincronizacionViewModel: SincronizacionViewModel =
+        viewModel(factory = SincronizacionViewModel.Factory)
+    val sincronizacion by sincronizacionViewModel.ui.collectAsStateWithLifecycle()
+    val ciclo = LocalLifecycleOwner.current
+    LaunchedEffect(ciclo) {
+        ciclo.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            while (true) {
+                sincronizacionViewModel.sincronizar()
+                delay(SincronizacionViewModel.INTERVALO_MS)
+            }
+        }
+    }
+
     // Confirmaciones de exito: un formulario que guardo bien vuelve atras y el
     // mensaje aparece en la pantalla anterior (por ejemplo, "Tarea creada...").
     val avisos = remember { SnackbarHostState() }
@@ -164,6 +187,7 @@ private fun AppConSesion(
                     alIrAProblemas = { navController.navigate(Rutas.PROBLEMAS) },
                     alIrAHistorial = { navController.navigate(Rutas.HISTORIAL) },
                     alIrASensores = { navController.navigate(Rutas.SENSORES) },
+                    alIrAClima = { navController.navigate(Rutas.CLIMA) },
                     alAbrirTarea = { id -> navController.navigate(Rutas.tareaDetalle(id)) }
                 )
             }
@@ -369,7 +393,22 @@ private fun AppConSesion(
                     alVolver = { navController.popBackStack() }
                 )
             }
+
+            // API externa: clima de San Bernardo (Open-Meteo)
+            composable(Rutas.CLIMA) {
+                ClimaScreen(
+                    alVolver = { navController.popBackStack() }
+                )
+            }
         }
+        AvisoSinConexion(
+            visible = !sincronizacion.conectado,
+            mensaje = sincronizacion.mensaje,
+            alReintentar = { sincronizacionViewModel.sincronizar() },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+        )
         // Se ubica sobre los botones flotantes para no taparlos.
         SnackbarHost(
             hostState = avisos,

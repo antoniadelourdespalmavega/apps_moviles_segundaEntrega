@@ -18,6 +18,7 @@ object Rutas {
     const val PROBLEMA_FORM = "problema_form"
     const val HISTORIAL = "historial"
     const val SENSORES = "sensores"
+    const val CLIMA = "clima"
 
     /** Listado de tareas, opcionalmente abierto con un filtro de categoria. */
     fun tareas(categoria: String? = null) =

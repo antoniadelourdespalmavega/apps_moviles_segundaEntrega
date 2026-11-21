@@ -59,6 +59,8 @@ import cl.duoc.huertoescolar.ui.animaciones.tocableConRebote
 import cl.duoc.huertoescolar.ui.animaciones.pulsoDeAtencion
 import cl.duoc.huertoescolar.ui.animaciones.NumeroAnimado
 import cl.duoc.huertoescolar.ui.theme.ColoresHuerto
+import cl.duoc.huertoescolar.ui.clima.ClimaViewModel
+import cl.duoc.huertoescolar.ui.clima.TarjetaClima
 import cl.duoc.huertoescolar.ui.theme.colorDeEstadoTarea
 
 /**
@@ -78,10 +80,13 @@ fun DashboardScreen(
     alIrAProblemas: () -> Unit,
     alIrAHistorial: () -> Unit,
     alIrASensores: () -> Unit,
+    alIrAClima: () -> Unit,
     alAbrirTarea: (Long) -> Unit,
-    viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory)
+    viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.Factory),
+    climaViewModel: ClimaViewModel = viewModel(factory = ClimaViewModel.Factory)
 ) {
     val estado by viewModel.ui.collectAsStateWithLifecycle()
+    val clima by climaViewModel.ui.collectAsStateWithLifecycle()
     val esAdmin = usuario.rol == Rol.ADMINISTRADOR
 
     LaunchedEffect(usuario.id) {
@@ -123,6 +128,15 @@ fun DashboardScreen(
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f)
                     )
                 }
+            }
+
+            // API externa: clima de San Bernardo y recomendacion de riego del dia.
+            item {
+                TarjetaClima(
+                    estado = clima,
+                    alTocar = alIrAClima,
+                    alReintentar = { climaViewModel.cargar() }
+                )
             }
 
             // Avisos y recordatorios (aparecen con animacion al cargarse).

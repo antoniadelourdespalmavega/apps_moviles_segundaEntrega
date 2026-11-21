@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -35,7 +34,7 @@ data class SensoresUiState(
 
 /**
  * Lecturas simuladas de sensores (solo consulta).
- * Los valores se generan dentro de la aplicacion: no hay sensores, placas
+ * Los valores los genera ms-huerto: no hay sensores, placas
  * Arduino o ESP32 conectados, y asi se indica siempre en la pantalla.
  */
 class SensoresViewModel(
@@ -46,11 +45,10 @@ class SensoresViewModel(
     private val filtroSectorId = MutableStateFlow<Long?>(null)
 
     init {
-        // Los sectores creados despues de la carga inicial reciben su primera
-        // lectura simulada al abrir la pantalla.
+        // ms-huerto genera una lectura simulada para los sectores que aun no
+        // tienen ninguna, y luego se actualiza la copia local.
         viewModelScope.launch {
-            val sectores = huertoRepository.observarSectoresSimples().first()
-            sensorRepository.simularLecturasFaltantes(sectores.map { it.id })
+            sensorRepository.simularLecturasFaltantes()
         }
     }
 

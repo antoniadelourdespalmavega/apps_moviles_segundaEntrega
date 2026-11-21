@@ -103,7 +103,8 @@ class RegistroViewModel(private val repositorio: SesionRepository) : ViewModel()
                 nombreUsuario = estado.usuario,
                 clave = estado.clave,
                 cargo = estado.cargo ?: Cargo.ESTUDIANTE,
-                taller = estado.taller
+                taller = estado.taller,
+                codigoAutorizacion = estado.codigoAutorizacion
             )
             when (resultado) {
                 is Operacion.Exito -> _ui.update {
