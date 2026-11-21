@@ -16,25 +16,28 @@ import cl.duoc.huertoescolar.data.repository.TareaRepository
  * Punto unico donde se crean la base de datos local, los clientes Retrofit y
  * los repositorios. Los ViewModel los obtienen desde aqui, de modo que la UI
  * nunca conoce a Room ni a Retrofit.
+ *
+ * Los repositorios tienen "internal set" para que las pruebas unitarias puedan
+ * reemplazarlos por objetos simulados (MockK) y probar las fabricas de los ViewModel.
  */
 object Contenedor {
 
     lateinit var baseDatos: HuertoDatabase
         private set
     lateinit var sincronizacionRepository: SincronizacionRepository
-        private set
+        internal set
     lateinit var sesionRepository: SesionRepository
-        private set
+        internal set
     lateinit var huertoRepository: HuertoRepository
-        private set
+        internal set
     lateinit var tareaRepository: TareaRepository
-        private set
+        internal set
     lateinit var reporteRepository: ReporteRepository
-        private set
+        internal set
     lateinit var sensorRepository: SensorRepository
-        private set
+        internal set
     lateinit var climaRepository: ClimaRepository
-        private set
+        internal set
 
     private var iniciado = false
 

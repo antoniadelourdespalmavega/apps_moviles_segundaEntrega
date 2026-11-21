@@ -1,0 +1,1 @@
+Aqui van las capturas del APK firmado y del archivo .jks que se muestran en el README.

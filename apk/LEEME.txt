@@ -1,0 +1,1 @@
+Aqui va el APK firmado (app-release.apk), generado con ./gradlew assembleRelease.
