@@ -2,48 +2,59 @@ package cl.duoc.huertoescolar.data.repository
 
 import cl.duoc.huertoescolar.data.local.dao.UsuarioDao
 import cl.duoc.huertoescolar.data.local.entity.Usuario
+import cl.duoc.huertoescolar.data.remote.aEntidad
+import cl.duoc.huertoescolar.data.remote.api.UsuariosApi
+import cl.duoc.huertoescolar.data.remote.dto.LoginRequest
+import cl.duoc.huertoescolar.data.remote.dto.PerfilRequest
+import cl.duoc.huertoescolar.data.remote.dto.RegistroRequest
+import cl.duoc.huertoescolar.data.remote.llamarApi
 import cl.duoc.huertoescolar.domain.Cargo
 import cl.duoc.huertoescolar.domain.Operacion
+import cl.duoc.huertoescolar.domain.Resultado
 import cl.duoc.huertoescolar.domain.Rol
 import kotlinx.coroutines.flow.Flow
 
-/** Cuentas de usuario: inicio de sesion, registro y edicion del perfil. */
-class SesionRepository(private val usuarioDao: UsuarioDao) {
+/**
+ * Cuentas de usuario contra ms-usuarios: inicio de sesion, registro y
+ * edicion del perfil. La lista de usuarios se lee de la copia local (Room).
+ */
+class SesionRepository(
+    private val api: UsuariosApi,
+    private val usuarioDao: UsuarioDao,
+    private val sincronizacion: SincronizacionRepository
+) {
 
-    /** Crea una cuenta nueva. El usuario y el correo no se pueden repetir. */
+    /** Crea una cuenta nueva en el microservicio. El usuario y el correo no se pueden repetir. */
     suspend fun registrar(
         nombre: String,
         correo: String,
         nombreUsuario: String,
         clave: String,
         cargo: Cargo,
-        taller: String
+        taller: String,
+        codigoAutorizacion: String = ""
     ): Operacion {
-        val usuarioLimpio = nombreUsuario.trim().lowercase()
-        val correoLimpio = correo.trim().lowercase()
-        if (usuarioDao.contarNombreUsuario(usuarioLimpio) > 0) {
-            return Operacion.Error("Ese nombre de usuario ya está en uso")
-        }
-        if (usuarioDao.contarCorreo(correoLimpio) > 0) {
-            return Operacion.Error("Ese correo ya esta registrado")
-        }
-        usuarioDao.insertar(
-            Usuario(
-                nombreUsuario = usuarioLimpio,
-                correo = correoLimpio,
-                clave = clave,
-                nombre = nombre.trim().replace(Regex("\\s+"), " "),
-                rol = cargo.rol,
-                cargo = cargo,
-                taller = taller.trim()
-            )
+        val solicitud = RegistroRequest(
+            nombre = nombre.trim().replace(Regex("\\s+"), " "),
+            correo = correo.trim().lowercase(),
+            nombreUsuario = nombreUsuario.trim().lowercase(),
+            clave = clave,
+            cargo = cargo.name,
+            taller = taller.trim(),
+            codigoAutorizacion = codigoAutorizacion.trim()
         )
-        return Operacion.Exito("Cuenta creada. Ya puedes iniciar sesión")
+        return when (val resultado = llamarApi { api.registrar(solicitud) }) {
+            is Resultado.Exito -> {
+                sincronizacion.sincronizarUsuarios()
+                Operacion.Exito("Cuenta creada. Ya puedes iniciar sesión")
+            }
+            is Resultado.Error -> Operacion.Error(resultado.mensaje)
+        }
     }
 
     /**
-     * Actualiza nombre, correo, taller y (opcionalmente) la clave del usuario.
-     * Devuelve el usuario actualizado, o un mensaje de error.
+     * Actualiza nombre, correo, taller y (opcionalmente) la clave.
+     * Devuelve el usuario actualizado, o null y el mensaje de error.
      */
     suspend fun actualizarPerfil(
         usuarioId: Long,
@@ -53,27 +64,34 @@ class SesionRepository(private val usuarioDao: UsuarioDao) {
         claveActual: String,
         claveNueva: String
     ): Pair<Usuario?, Operacion> {
-        val actual = usuarioDao.porId(usuarioId)
-            ?: return null to Operacion.Error("La cuenta ya no existe")
-        val correoLimpio = correo.trim().lowercase()
-        if (usuarioDao.contarCorreo(correoLimpio, excluirId = usuarioId) > 0) {
-            return null to Operacion.Error("Ese correo ya esta registrado por otra cuenta")
-        }
-        if (claveNueva.isNotEmpty() && claveActual != actual.clave) {
-            return null to Operacion.Error("La contraseña actual no es correcta")
-        }
-        val actualizado = actual.copy(
+        val solicitud = PerfilRequest(
             nombre = nombre.trim().replace(Regex("\\s+"), " "),
-            correo = correoLimpio,
+            correo = correo.trim().lowercase(),
             taller = taller.trim(),
-            clave = if (claveNueva.isNotEmpty()) claveNueva else actual.clave
+            claveActual = claveActual,
+            claveNueva = claveNueva
         )
-        usuarioDao.actualizar(actualizado)
-        return actualizado to Operacion.Exito("Perfil actualizado")
+        return when (val resultado = llamarApi { api.actualizarPerfil(usuarioId, solicitud) }) {
+            is Resultado.Exito -> {
+                val usuario = resultado.dato.aEntidad()
+                sincronizacion.sincronizarUsuarios()
+                usuario to Operacion.Exito("Perfil actualizado")
+            }
+            is Resultado.Error -> null to Operacion.Error(resultado.mensaje)
+        }
     }
 
-    suspend fun autenticar(nombreUsuario: String, clave: String): Usuario? =
-        usuarioDao.autenticar(nombreUsuario.trim().lowercase(), clave)
+    /** Inicia sesion con usuario o correo. El servidor compara la contrasena. */
+    suspend fun autenticar(identificador: String, clave: String): Resultado<Usuario> {
+        val solicitud = LoginRequest(identificador.trim().lowercase(), clave)
+        return when (val resultado = llamarApi { api.login(solicitud) }) {
+            is Resultado.Exito -> Resultado.Exito(resultado.dato.aEntidad())
+            is Resultado.Error -> resultado
+        }
+    }
+
+    /** Actualiza la lista de cuentas (por ejemplo, para mostrarla en el login). */
+    suspend fun actualizarCuentas(): Operacion = sincronizacion.sincronizarUsuarios()
 
     suspend fun porId(id: Long): Usuario? = usuarioDao.porId(id)
 

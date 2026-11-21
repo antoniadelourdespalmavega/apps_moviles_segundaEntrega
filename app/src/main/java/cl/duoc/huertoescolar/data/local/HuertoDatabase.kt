@@ -10,6 +10,7 @@ import cl.duoc.huertoescolar.data.local.dao.EvidenciaDao
 import cl.duoc.huertoescolar.data.local.dao.ReporteDao
 import cl.duoc.huertoescolar.data.local.dao.SectorDao
 import cl.duoc.huertoescolar.data.local.dao.SensorDao
+import cl.duoc.huertoescolar.data.local.dao.SincronizacionDao
 import cl.duoc.huertoescolar.data.local.dao.TareaDao
 import cl.duoc.huertoescolar.data.local.dao.UsuarioDao
 import cl.duoc.huertoescolar.data.local.dao.ValidacionDao
@@ -24,7 +25,10 @@ import cl.duoc.huertoescolar.data.local.entity.Validacion
 
 /**
  * Base de datos local (Room sobre SQLite).
- * La informacion se conserva aunque se cierre y vuelva a abrir la aplicacion.
+ *
+ * Desde la tercera entrega los datos "oficiales" viven en los microservicios.
+ * Room guarda una copia local: las pantallas leen de aqui (se actualizan
+ * solas) y se sigue viendo la ultima informacion si se corta la conexion.
  */
 @Database(
     entities = [
@@ -37,7 +41,8 @@ import cl.duoc.huertoescolar.data.local.entity.Validacion
         ReporteProblema::class,
         LecturaSensor::class
     ],
-    version = 2,
+    // Version 3: los datos ahora vienen de los microservicios (Room es la copia local).
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -51,6 +56,7 @@ abstract class HuertoDatabase : RoomDatabase() {
     abstract fun validacionDao(): ValidacionDao
     abstract fun reporteDao(): ReporteDao
     abstract fun sensorDao(): SensorDao
+    abstract fun sincronizacionDao(): SincronizacionDao
 
     companion object {
 

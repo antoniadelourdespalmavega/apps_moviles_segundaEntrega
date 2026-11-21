@@ -93,4 +93,23 @@ object Fechas {
             null
         }
     }
+
+    /**
+     * Nombre corto del dia para el pronostico: "Hoy", "Mañana" o, por
+     * ejemplo, "lun 17/11". Recibe la fecha como la entrega la API (aaaa-mm-dd).
+     */
+    fun nombreDia(fechaIso: String, hoy: Long = hoy()): String {
+        val fecha = try {
+            val formato = SimpleDateFormat("yyyy-MM-dd", Locale("es", "CL"))
+            formato.isLenient = false
+            formato.parse(fechaIso.trim())?.time
+        } catch (e: Exception) {
+            null
+        } ?: return fechaIso
+        return when (diasEntre(hoy, fecha)) {
+            0 -> "Hoy"
+            1 -> "Mañana"
+            else -> SimpleDateFormat("EEE dd/MM", Locale("es", "CL")).format(Date(fecha))
+        }
+    }
 }
