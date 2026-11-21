@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -22,8 +24,24 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Firma del APK de release con la llave keystore/huerto-escolar.jks
+    // (datos en keystore.properties, en la raiz del proyecto).
+    val propiedadesFirma = Properties().apply {
+        val archivo = rootProject.file("keystore.properties")
+        if (archivo.exists()) archivo.inputStream().use { load(it) }
+    }
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(propiedadesFirma.getProperty("storeFile", "keystore/huerto-escolar.jks"))
+            storePassword = propiedadesFirma.getProperty("storePassword")
+            keyAlias = propiedadesFirma.getProperty("keyAlias")
+            keyPassword = propiedadesFirma.getProperty("keyPassword")
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             optimization {
                 enable = false
             }
@@ -60,13 +78,19 @@ dependencies {
     // Carga de imagenes con Coil (AsyncImage), como se vio en clase
     implementation(libs.coil.compose)
 
-    // Persistencia local con Room (SQLite)
+    // Consumo de los microservicios y de la API externa de clima (como en el ejemplo del docente)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    // Persistencia local con Room (SQLite): copia local de los datos de los microservicios
+
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
